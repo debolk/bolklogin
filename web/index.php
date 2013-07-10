@@ -16,7 +16,6 @@ $storage = new OAuth2\Storage\Pdo(array(
 $server = new OAuth2\Server($storage);
 $app->server = $server;
 
-
 $server->addGrantType(new OAuth2\GrantType\ClientCredentials($storage));
 $server->addGrantType(new OAuth2\GrantType\AuthorizationCode($storage));
 
