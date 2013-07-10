@@ -16,11 +16,17 @@ $storage = new OAuth2\Storage\Pdo(array(
 $server = new OAuth2\Server($storage);
 $app->server = $server;
 
+
 $server->addGrantType(new OAuth2\GrantType\ClientCredentials($storage));
 $server->addGrantType(new OAuth2\GrantType\AuthorizationCode($storage));
 
 $request = new Tonic\Request();
 
 $resource = $app->getResource($request);
+
+/**
+ * Convert conventional output from OAuth lib to html
+ */
+
 $response = $resource->exec();
 $response->output();
