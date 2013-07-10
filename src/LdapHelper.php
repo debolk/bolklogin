@@ -26,14 +26,20 @@ class LdapHelper
                      '(' => '\28',
                      ')' => '\29',
                      "\x00" => '\00');
-        return str_replace(array_keys($sanitized),array_values($sanitized),$string);
+        return str_replace(array_keys($sanitized),array_values($sanitized),$argument);
     }
 
     public function bind($uid, $pass)
     {
-        $uid = this->escapeArgument($uid);
-        $users = ldap_search($this->ldap, $basedn, '(uid=' 
-        return ldap_bind($this->ldap, $uid, $pass);
+        $uid = $this->escapeArgument($uid);
+        $users = @ldap_search($this->ldap, $basedn, '(uid=' . $uid . ')');
+        if(!$users || ldap_count_entries($this->ldap, $users) == 0)
+            return false;
+        $users = ldap_get_entries($this->ldap, $users);
+
+        $dn = $users[0]['dn'];
+
+        return ldap_bind($this->ldap, $dn, $pass);
     }
 
     public function memberOf($groupdn, $uid)

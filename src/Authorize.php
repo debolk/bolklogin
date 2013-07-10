@@ -9,7 +9,7 @@ class Authorize extends Tonic\Resource {
      */
     function getAuthorize() {
         if(!isset($_SERVER['PHP_AUTH_USER'])) {
-            $result = new Tonic\Response(401, "Inloggen is verplicht!");
+            $result = new Tonic\Response(401, "Om deze service te bekijken is inloggen verplicht, refresh om opnieuw in te loggen.");
             $result->wwwAuthenticate = 'Basic realm="De Bolk"';
             return $result;
         }
@@ -24,13 +24,14 @@ class Authorize extends Tonic\Resource {
 
         return ResourceHelper::OutputToResponse(function() {
 
-            $ldap->memberOf('cn=leden,ou=groups,o=nieuwedelft,dc=bolkhuis,dc=nl', 'max');
-
             $req = OAuth2\Request::createFromGlobals();
             $response = new OAuth2\Response();
 
             if($this->app->server->validateAuthorizeRequest($req, $response))
+            {
+
                 $this->app->server->handleAuthorizeRequest($req, $response, true);
+            }
 
             $response->send();
         });
