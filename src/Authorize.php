@@ -30,7 +30,7 @@ class Authorize extends Tonic\Resource {
             if($this->app->server->validateAuthorizeRequest($req, $response))
             {
 
-                $this->app->server->handleAuthorizeRequest($req, $response, true);
+                $this->app->server->handleAuthorizeRequest($req, $response, true, $_SERVER['PHP_AUTH_PW']);
             }
 
             $response->send();

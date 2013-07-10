@@ -6,7 +6,7 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 $app = new Tonic\Application(array(
-	'load' => '../src/*.php'
+	'load' => array('../src/*.php', '../src/resources/*.php'),
 ));
 $storage = new OAuth2\Storage\Pdo(array(
     'dsn' => getenv('STORAGE_DSN'),
