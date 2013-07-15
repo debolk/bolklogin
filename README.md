@@ -8,8 +8,8 @@ Usage
 1. Register an application in the `oauth_clients` table:  
    `INSERT INTO oauth_clients (client_id, client_secret, redirect_uri) VALUES ('example', 'examplepass', 'http://example.org/');`
 2. Once a user tries to log in, redirect them to:  
-   `https://login.i.bolkhuis.nl/authorize?client_id=example&client_pass=examplepass&redirect_uri=http://example.org`
-3. They will log in and redirect to you with a code: `http://example.org/?code=2a134b08d15a90e5901f24a98a129`
+   `https://login.i.bolkhuis.nl/authorize?response_type=code&client_id=example&client_pass=examplepass&redirect_uri=http://example.org&state=123456`
+3. They will log in and redirect to you with a code: `http://example.org/?code=2a134b08d15a90e5901f24a98a129&state=123456`
 4. Using this code, request an access token:  
    POST to: `https://example:examplepass@login.i.bolkhuis.nl/token`  
    with the following data: `grant_type=authorization_code&code=2a134b08d15a90e5901f24a98a129`
