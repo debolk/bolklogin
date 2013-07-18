@@ -28,4 +28,5 @@ $resource = $app->getResource($request);
  */
 
 $response = $resource->exec();
+$response->AccessControlAllowOrigin = '*';
 $response->output();
