@@ -14,7 +14,7 @@ Usage
    POST to: `https://example:examplepass@login.i.bolkhuis.nl/token`  
    with the following data: `grant_type=authorization_code&code=2a134b08d15a90e5901f24a98a129&redirect_uri=http://example.org`
 	  -or-
-	 POST to: `https://login.i.bolkhuis.nl/token`
+   POST to: `https://login.i.bolkhuis.nl/token`
    with the following data: `grant_type=authorization_code&code=2a134b08d15a90e5901f24a98a129&redirect_uri=http://example.org&client_id=example&client_secret=examplepass`
 5. You can use the resulting access token as a parameter to api servers so they can check if you represent the logged in user
 6. You can also check if a user is of a certain class:
