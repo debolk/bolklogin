@@ -21,4 +21,5 @@ Usage
       Gives a status code of 200 if the user is lid or kandidaad-lid
     * `https://login.i.bolkhuis.nl/bekend/?access_token={accesstoken}`  
       Gives a status code of 200 if the user is lid, kandidaad-lid or oud-lid
-    
+    * `https://login.i.bolkhuis.nl/ictcom/?access_token={accesstoken}`
+		  Gives a status code of 200 if the user is bestuur, ictcom or beheer`
