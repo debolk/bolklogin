@@ -112,7 +112,7 @@ class Login extends Tonic\Resource
      */
     private function validateParameters($parameters)
     {
-        $required = ['client_id' => null, 'client_secret' => null, 'redirect_url' => null, 'state' => null];
+        $required = ['client_id' => null, 'client_secret' => null, 'redirect_url' => null, 'state' => null, 'response_type' => null];
 
         // Strip all non-required keys
         $parameters = array_intersect_key($parameters, $required);
@@ -120,6 +120,6 @@ class Login extends Tonic\Resource
         // Strip all FALSE values
         $parameters = array_filter($parameters);
         
-        return (sizeof($parameters) === 4);
+        return (sizeof($parameters) === sizeof($required));
     }
 }
