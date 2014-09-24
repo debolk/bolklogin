@@ -53,8 +53,8 @@ input, button {
 
 input {
     display: block;
-    width: 36em;
-    max-width: 100%;
+    min-width: 100%;
+    max-width: 30em;
     height: 2em;
 }
 
