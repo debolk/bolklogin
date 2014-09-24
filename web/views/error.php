@@ -2,9 +2,7 @@
 <html>
     <head>
         <title>Bolklogin</title>
-        <style>
-            .error { border-radius: 0.25em; padding: 1em; background-color: red; color: white; }
-        </style>
+        <link rel="stylesheet" href="stylesheets/application.css">
     </head>
     <body>
         <h1>Bolklogin</h1>

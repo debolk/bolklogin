@@ -2,30 +2,28 @@
 <html>
     <head>
         <title>Bolklogin</title>
-        <style>
-            .error { border-radius: 0.25em; padding: 1em; background-color: red; color: white; }
-        </style>
+        <link rel="stylesheet" href="stylesheets/application.css">
     </head>
     <body>
         <h1>Bolklogin</h1>
         <p>
-            Je bent hier heengestuurd door een applicatie die graag jouw gegevens van De Bolk wilt gebruiken. Log in om je gegevens te delen met deze applicatie. Het is op dit moment niet mogelijk om te beperken welke gegevens er aan de applicatie worden verstrekt. In principe heeft de applicatie onbeperkte toegang tot jouw account. 
+            Je bent hierheen gestuurd door een applicatie die graag jouw gegevens van De Bolk wilt gebruiken. Log in om je gegevens te delen met deze applicatie.
         </p>
         <?php if ($error !== null): ?>
             <p class="error"><?php echo $error; ?></p>
         <?php endif; ?>
         <form action="<?= $_SERVER['REQUEST_URI'];?>" method="POST">
-            <p>
+            <div>
                 <label for="username">Gebruikersnaam</label><br>
                 <input type="text" name="username" id="username">
-            </p>
-            <p>
+            </div>
+            <div>
                 <label for="password">Wachtwoord</label><br>
                 <input type="password" name="password" id="password">
-            </p>
-            <p>
-                <button type="submit">Inloggen</button>
-            </p>
+            </div>
+            <div>
+                <button type="submit" class="login">Inloggen</button>
+            </div>
         </form>
     </body>
 </html>

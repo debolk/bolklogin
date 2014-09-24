@@ -1,0 +1,61 @@
+body {
+    font-family: Verdana, sans-serif;
+    font-size: medium;
+}
+p {
+    max-width: 36em;
+}
+.warning {
+    background-color: #ffffd5;
+    border-radius: 0.25em;
+    color: black;
+    padding: 1em;
+}
+.yes, .no {
+    border: none;
+    border-radius: 0.5em;
+    color: white;
+    cursor: pointer;
+    padding: 1em;
+}
+.yes {
+    background: none repeat scroll 0 0 #57a957;
+    border-color: #57a957;
+    color: #d2ffd2;
+}
+.no {
+    background: none repeat scroll 0 0 #c43c35;
+    border-color: #c43c35;
+    color: #ffd3d3;
+}
+.error {
+    background-color: red;
+    border-radius: 0.25em;
+    color: white;
+    padding: 1em;
+}
+
+.login {
+    background: none repeat scroll 0 0 #57a957;
+    border: none;
+    border-color: #57a957;
+    border-radius: 0.5em;
+    color: #d2ffd2;
+    color: white;
+    cursor: pointer;
+    padding: 1em;
+}
+
+input, button {
+    font-size: medium;
+    margin-right: 1em;
+}
+
+input {
+    width: 36em;
+    height: 2em;
+}
+
+form div {
+    margin-bottom: 1em;
+}

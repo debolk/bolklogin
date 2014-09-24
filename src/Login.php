@@ -61,7 +61,7 @@ class Login extends Tonic\Resource
     private function loginForm($error = null)
     {
         ob_start();
-        include('../public/login.php');
+        include('../web/views/login.php');
         return ob_get_clean(); 
     }
 
@@ -72,7 +72,7 @@ class Login extends Tonic\Resource
     private function authorizationForm()
     {
         ob_start();
-        include('../public/authorize.php');
+        include('../web/views/authorize.php');
         return ob_get_clean();
     }
 
@@ -89,7 +89,7 @@ class Login extends Tonic\Resource
     private function displayError($error_message)
     {
         ob_start();
-        include('../public/error.php');
+        include('../web/views/error.php');
         return ob_get_clean();
     }
 
