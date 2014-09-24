@@ -2,8 +2,14 @@
 
 require_once '../vendor/autoload.php';
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+if (getenv('DEBUG')) {
+    ini_set('display_errors', true);
+    error_reporting(E_ALL);
+}
+else {
+    ini_set('display_errors', false);
+    error_reporting(E_ERROR);
+}
 
 $app = new Tonic\Application(array(
 	'load' => array('../src/*.php', '../src/resources/*.php'),
