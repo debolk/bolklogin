@@ -10,7 +10,7 @@
     <body>
         <h1>Bolklogin</h1>
         <p class="warning">
-            <strong>Let op:</strong> <?= $_GET['client_id']; ?> krijgt toegang tot al jouw gegevens in de ledenadminstratie.
+            <strong>Let op:</strong> <?= $_GET['client_id']; ?> krijgt toegang tot jouw volledige account.
         </p>
         <form action="<?= $_SERVER['REQUEST_URI'];?>" method="POST">
             <p>
