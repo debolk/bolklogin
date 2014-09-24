@@ -20,11 +20,11 @@ class Login extends Tonic\Resource
 
         // Check parameters for completeness
         if (! $this->validateParameters($_GET)) {
-            return $this->displayError('Required parameters missing or not a known client');
+            return $this->displayError('Required parameters missing');
         }
 
         // Return a token if the user has authorized this application before
-        if ($this->app->server->validateAuthorizeRequest($request, $response)) {
+        if (! $this->app->server->validateAuthorizeRequest($request, $response)) {
             return $this->returnToken($response);
         }
 
@@ -34,6 +34,7 @@ class Login extends Tonic\Resource
                 $ldap = LdapHelper::Connect();
                 if(@$ldap->bind($_POST['username'], $_POST['password'])) {
                     $_SESSION['user_id'] = $_POST['username'];
+                    return $this->authorizationForm();
                 }
                 else {
                     return $this->loginForm('Gebruikersnaam en/of wachtwoord niet correct');
@@ -44,7 +45,7 @@ class Login extends Tonic\Resource
 
         // If this is a authorization form submission
         if (isset($_POST['authorization'])) {
-            $authorization = ($_POST['authorization'] == '1');
+            $authorization = (bool)($_POST['authorization'] == '1');
             $this->app->server->handleAuthorizeRequest($request, $response, $authorization, $_SESSION['user_id']);
             return $this->returnToken($response);
         }
@@ -112,7 +113,13 @@ class Login extends Tonic\Resource
      */
     private function validateParameters($parameters)
     {
-        $required = ['client_id' => null, 'client_secret' => null, 'redirect_url' => null, 'state' => null, 'response_type' => null];
+        $required = [
+            'client_id' => null,
+            'client_pass' => null,
+            'redirect_uri' => null,
+            'state' => null,
+            'response_type' => null
+        ];
 
         // Strip all non-required keys
         $parameters = array_intersect_key($parameters, $required);

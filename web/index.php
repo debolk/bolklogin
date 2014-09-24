@@ -3,11 +3,11 @@
 require_once '../vendor/autoload.php';
 
 if (getenv('DEBUG')) {
-    ini_set('display_errors', true);
+    ini_set('display_errors', 1);
     error_reporting(E_ALL);
 }
 else {
-    ini_set('display_errors', false);
+    ini_set('display_errors', 0);
     error_reporting(E_ERROR);
 }
 
