@@ -21,8 +21,8 @@ Usage
     * `https://login.i.bolkhuis.nl/bestuur/?access_token={accesstoken}`  
       Gives a status code of 200 if the user is bestuur or beheer
     * `https://login.i.bolkhuis.nl/lid/?access_token={accesstoken}`  
-      Gives a status code of 200 if the user is lid or kandidaad-lid
+      Gives a status code of 200 if the user is lid or kandidaat-lid
     * `https://login.i.bolkhuis.nl/bekend/?access_token={accesstoken}`  
-      Gives a status code of 200 if the user is lid, kandidaad-lid or oud-lid
+      Gives a status code of 200 if the user is lid, kandidaat-lid or oud-lid
     * `https://login.i.bolkhuis.nl/ictcom/?access_token={accesstoken}`
 		  Gives a status code of 200 if the user is bestuur, ictcom or beheer`
