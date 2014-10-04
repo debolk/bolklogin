@@ -9,6 +9,6 @@ class Readme extends Tonic\Resource
      */
     public function getIndex()
     {
-        return new Tonic\Response(200, file_get_contents('../README.md'), array('ContentType' => 'text/plain'));
+        return new Tonic\Response(200, file_get_contents('../web/instructions.html'), array('ContentType' => 'text/html'));
     }
 }

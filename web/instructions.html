@@ -1,0 +1,148 @@
+<doctype html>
+<html>
+    <head>
+        <title>BolkLogin</title>
+
+
+    </head>
+    <body>
+        <h1>BolkLogin</h1>
+        <p>
+            You've reached the OAuth 2 authorization server for De Bolk.
+        </p>
+
+        <nav>
+            <h2>Index</h2>
+            <ul>
+                <li><a href="#introduction-to-oauth">Introduction to OAuth2</a></li>
+                <li><a href="#common-process-for-clients">Common process for clients</a></li>
+                <li><a href="#common-process-for-resource-servers">Common process for resource servers</a></li>
+                <li><a href="#api-specification">API specification</a></li>
+            </ul>
+        </nav>
+
+        <h2><a name="introduction-to-oauth">Introducation to OAuth2</a></h2>
+        <p>
+            Read the excellent <a href="https://www.digitalocean.com/community/tutorials/an-introduction-to-oauth-2">introduction to OAuth2 by DigitalOcean</a> to understand the terminology and process involved in an OAuth 2 authorization process. 
+        </p>
+
+        <h2><a name="common-process-for-clients">Common process for clients</a></h2>
+        <h3>Step 0: Register your client</h3>
+        <p>
+            Log in to <a href="http://prism.i.bolkhuis.nl/phpmyadmin">PHPMyAdmin on prism</a>. Register your client in the database named "login", table "oauth_clients". You'll need to enter a client_id, client_pass and redirect_uri. 
+        </p>
+        <h3>Step 1: Redirect the user to the authorization page</h3>
+        <p>
+            Direct the user in a HTML-compatible browser to <code>https://auth.debolk.nl/authorize?response_type=code&amp;client_id=example&amp;client_pass=examplepass&amp;redirect_uri=http://example.org&amp;state=123456</code> with the details of your application added. The state parameter must be randomly generated. The authorization server will ask the client to log in and confirm that he/she will allow your application access to his/her account. 
+        </p>
+        <p>
+            If the user agrees, the authorization server will redirect the browser back to your application (redirect_uri) with a "code" and a "state" parameter: <code>http://example.org/?code=2a134b08d15a90e5901f24a98a129&amp;state=123456</code>. The code parameter is your authorization token. It is valid for only a few seconds. You must trade it in for an access token in step 2. 
+        </p>
+        <p>
+            If the user disapproves, the authorization server will redirect back to your application too, but with a "error" and "error_description" parameter explaining the cause, for example: <code>http://example.org?error=access_denied&amp;error_description=The+user+denied+access+to+your+application&amp;state=1</code>.
+        </p>
+        <p>
+            You must validate that the returned state parameter is identical to your original parameter. If it is not, warn your user and restart the process, otherwise you are at risk of <a href="http://en.wikipedia.org/wiki/Cross-site_request_forgery">CSRF-attacks</a> (and the authorization token you received probably won't work anyway). 
+        </p>
+        <h3>Step 2: Change your authentication token for an access token</h3>
+        <p>
+            If the user approved your application to access his/her account, you must send a POST-request to the authorization server at the address: 
+        </p>
+        <p>
+            <code>https://client_id:client_pass@login.i.bolkhuis.nl/token</code> (replacing client_id and client_pass with your values)
+        </p>
+        <p>
+            with the following data encoded as JSON:
+        </p>
+        <p>
+            <code>{ "grant_type":"authorization_code", "redirect_uri":"http://example.org/", "code":"example-authorization-token" }</code>
+        </p>
+        <p>
+            The response of the request will contain an access token which you can use to access APIs guarded by the oauth server such as <a href="http://musicbrainz.i.bolkhuis.nl/player/">http://musicbrainz.i.bolkhuis.nl/player</a> (note that this link is the documentation of the particular API, which is not protected). The access token looks like the following:
+        </p>
+        <p>
+            <code>{"access_token":"03807cb390319329bdf6c777d4dfae9c0d3b3c35","expires_in":3600,"token_type":"bearer","scope":null}</code>
+        </p>
+        <p>
+            If your request fails for some reason, the server will return an error and an error description, like this:
+        </p>
+        <p>
+            <code>
+                { "error": "invalid_request", "error_description": "The grant type was not specified in the request" }
+            </code>
+        </p>
+        <h3>Step 3: make a request to the resource server</h3>
+        <p>
+            Using your access token, you may make requests to a resource server on behalf of the user. How to send the access token to the server is dependent on the server, but the consensus is to simply append it to an URL, for example:  
+        </p>
+        <p>
+            <code>http://musicbrainz.i.bolkhuis.nl/player/mjs/mp3soos?access_token=example</code>
+        </p>
+        <p>The server will verify that your access token is valid and (if it is) execute your request.</p>
+
+        <h2><a name="common-process-for-resource-servers">Common process for resource servers</a></h2>
+        <p>
+            As a resource server, you need to validate access tokens sent to you by clients. You do this by calling the authorization server at the following url:
+        </p>
+        <p>
+            <code>https://login.i.bolkhuis.nl/resource/?access_token=example</code>
+        </p>
+        <p>
+            If valid, the authorization server will return the full access token, the ID of the user (which you can use to look up the user details in <a href="http://blip.i.bolkhuis.nl">blip</a> and <a href="http://operculum.i.bolkhuis.nl">operculum</a>) and the expiry time of the access token (<a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>-formatted), which looks like this:
+        </p>
+        <p>
+            <code>{"access_token":"example","user_id":"jakob","expires":"2014-09-29T22:37:09+00:00"}</code>
+        </p>
+        <p>
+            If the access token checks out, you may grant access on behalf of the specified user. Alternatively, you may check if the user has a specific authorization level. Five authorization levels currently exist:
+        </p>
+        <ul>
+            <li><strong>bestuur: </strong> members of beheer or bestuur</li>
+            <li><strong>ictcom: </strong> members of beheer, bestuur or ictcom</li>
+            <li><strong>lid: </strong> members of the society (does not include candidate-members)</li>
+            <li><strong>bekend: </strong> members and candidate-members of the society</li>
+            <li><strong>mp3control: </strong> members of beheer and bestuur (this level is used to control access to the API of the mp3-computers)</li>
+        </ul>
+        <p>
+            Additionally, there is a group in LDAP named 'oauth-test' which is normally empty. Adding a user to this group will grant all authorization levels, allowing for testing oauth security. Do not add users to this group permanently.
+        </p>
+        <p>
+            You can check whether the current user can access the authorization level "ictcom" for example by requesting the URL:
+        </p>
+        <p>
+            <code>https://login.i.bolkhuis.nl/ictcom/?access_token=example-access-token</code>
+        </p>
+        <p>
+            and checking whether the <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">HTTP status code</a> of the response is <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a>.
+        </p>
+ 
+        <h2><a name="api-specification">API Specification</a></h2>
+        <p>
+            The API consists of a number of end-points which need to be described in further detail (TODO). 
+        </p>
+    </body>
+</html>
+
+<!-- Usage
+-----
+1. Register an application in the `oauth_clients` table:  
+   `INSERT INTO oauth_clients (client_id, client_secret, redirect_uri) VALUES ('example', 'examplepass', 'http://example.org/');`
+2. Once a user tries to log in, redirect them to:  
+   `https://login.i.bolkhuis.nl/authorize?response_type=code&client_id=example&client_pass=examplepass&redirect_uri=http://example.org&state=123456`
+3. They will log in and redirect to you with a code: `http://example.org/?code=2a134b08d15a90e5901f24a98a129&state=123456`
+4. Using this code, request an access token:  
+   POST to: `https://example:examplepass@login.i.bolkhuis.nl/token`  
+   with the following data: `grant_type=authorization_code&code=2a134b08d15a90e5901f24a98a129&redirect_uri=http://example.org`
+      -or-
+   POST to: `https://login.i.bolkhuis.nl/token`
+   with the following data: `grant_type=authorization_code&code=2a134b08d15a90e5901f24a98a129&redirect_uri=http://example.org&client_id=example&client_secret=examplepass`
+5. You can use the resulting access token as a parameter to api servers so they can check if you represent the logged in user
+6. You can also check if a user is of a certain class:
+    * `https://login.i.bolkhuis.nl/bestuur/?access_token={accesstoken}`  
+      Gives a status code of 200 if the user is bestuur or beheer
+    * `https://login.i.bolkhuis.nl/lid/?access_token={accesstoken}`  
+      Gives a status code of 200 if the user is lid or kandidaat-lid
+    * `https://login.i.bolkhuis.nl/bekend/?access_token={accesstoken}`  
+      Gives a status code of 200 if the user is lid, kandidaat-lid or oud-lid
+    * `https://login.i.bolkhuis.nl/ictcom/?access_token={accesstoken}`
+          Gives a status code of 200 if the user is bestuur, ictcom or beheer` -->
