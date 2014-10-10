@@ -115,7 +115,6 @@ class Authenticate extends Tonic\Resource
     {
         $required = [
             'client_id' => null,
-            'client_pass' => null,
             'redirect_uri' => null,
             'state' => null,
             'response_type' => null

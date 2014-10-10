@@ -33,7 +33,7 @@
         </p>
         <h3>Step 1: Redirect the user to the authorization page</h3>
         <p>
-            Direct the user in a HTML-compatible browser to <code>https://auth.debolk.nl/authorize?response_type=code&amp;client_id=example&amp;client_pass=examplepass&amp;redirect_uri=http://example.org&amp;state=123456</code> with the details of your application added. The state parameter must be randomly generated. The authorization server will ask the client to log in and confirm that he/she will allow your application access to his/her account. 
+            Direct the user in a HTML-compatible browser to <code>https://auth.debolk.nl/authorize?response_type=code&amp;client_id=example&amp;redirect_uri=http://example.org&amp;state=123456</code> with the details of your application added. The state parameter must be randomly generated. The authorization server will ask the client to log in and confirm that he/she will allow your application access to his/her account. 
         </p>
         <p>
             If the user agrees, the authorization server will redirect the browser back to your application (redirect_uri) with a "code" and a "state" parameter: <code>http://example.org/?code=2a134b08d15a90e5901f24a98a129&amp;state=123456</code>. The code parameter is your authorization token. It is valid for only a few seconds. You must trade it in for an access token in step 2. 
