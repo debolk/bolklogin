@@ -2,7 +2,7 @@
 /**
  * @uri /authenticate
  */
-class Login extends Tonic\Resource
+class Authenticate extends Tonic\Resource
 {
 
     /**
