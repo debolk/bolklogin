@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Bolklogin</title>
-        <link rel="stylesheet" type="text/css" href="stylesheets/application.css">
+        <style><?php include "stylesheets/application.css"; ?></style>
     </head>
     <body>
         <h1>Toestemming</h1>
