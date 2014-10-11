@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Bolklogin</title>
-        <link rel="stylesheet" href="stylesheets/application.css">
+        <link rel="stylesheet" type="text/css" href="stylesheets/application.css">
     </head>
     <body>
         <h1>Bolklogin</h1>
