@@ -7,7 +7,7 @@
     <body>
         <h1>Bolklogin</h1>
         <p>
-            Je bent hierheen gestuurd door een applicatie die graag jouw gegevens van De Bolk wilt gebruiken. Log in om je gegevens te delen met deze applicatie.
+            Je bent hierheen gestuurd door een applicatie die graag toegang wilt tot jouw Bolk-account. Log in om je gegevens te delen met deze applicatie.
         </p>
         <?php if ($error !== null): ?>
             <p class="error"><?php echo $error; ?></p>

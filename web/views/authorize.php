@@ -7,7 +7,7 @@
     <body>
         <h1>Toestemming</h1>
         <p class="warning">
-            <strong>Let op:</strong> <?= $_GET['client_id']; ?> krijgt toegang tot jouw volledige account.
+            Je geeft <?= $_GET['client_id']; ?> toestemming om jouw gebruikersnaam voor De Bolk op te vragen.
         </p>
         <form action="<?= $_SERVER['REQUEST_URI'];?>" method="POST">
             <div>
