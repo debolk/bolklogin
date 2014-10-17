@@ -63,7 +63,7 @@
             <code>https://client_id:client_pass@login.i.bolkhuis.nl/token</code> (replacing client_id and client_pass with your values)
         </p>
         <p>
-            with the following data encoded as JSON:
+            with the following data encoded as JSON. Be sure to add a correct <code>Content-type: application/json</code> header.
         </p>
         <p>
             <code>{ "grant_type":"authorization_code", "redirect_uri":"http://example.org/", "code":"example-authorization-token" }</code>
@@ -72,7 +72,7 @@
             The response of the request will contain an access token which you can use to access APIs guarded by the oauth server such as <a href="http://musicbrainz.i.bolkhuis.nl/player/">http://musicbrainz.i.bolkhuis.nl/player</a> (note that this link is the documentation of the particular API, which is not protected). The access token looks like the following:
         </p>
         <p>
-            <code>{"access_token":"03807cb390319329bdf6c777d4dfae9c0d3b3c35","expires_in":3600,"token_type":"bearer","scope":null}</code>
+            <code>{ "access_token": "fb028dac33e168c60d6558a610cbbaf289f02871", "expires_in": 3600, "token_type": "bearer", "scope": null, "refresh_token": "cfa09ad5ab1c9418c6541c7726360d7b06c47e9b" }</code>
         </p>
         <p>
             If your request fails for some reason, the server will return an error and an error description, like this:
