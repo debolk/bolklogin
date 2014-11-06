@@ -9,3 +9,5 @@ RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule .* index.php [L]
+
+Header add Strict-Transport-Security "max-age=15768000;includeSubDomains"
