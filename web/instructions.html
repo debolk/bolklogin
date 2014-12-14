@@ -69,6 +69,20 @@
             <code>{ "grant_type":"authorization_code", "redirect_uri":"http://example.org/", "code":"example-authorization-token" }</code>
         </p>
         <p>
+            Alternatively, you may also use the endpoint <code>https://login.i.bolkhuis.nl/token</code> and supply all parameters in valid JSON:
+        </p>
+        <p>
+            <code>
+                {
+                    "grant_type":"authorization_code",
+                    "redirect_uri":"http://example.org/",
+                    "code":"example-authorization-token",
+                    "client_id": "",
+                    "client_secret": ""
+                }
+            </code>
+        </p>
+        <p>
             The response of the request will contain an access token which you can use to access APIs guarded by the oauth server such as <a href="http://musicbrainz.i.bolkhuis.nl/player/">http://musicbrainz.i.bolkhuis.nl/player</a> (note that this link is the documentation of the particular API, which is not protected). The access token looks like the following:
         </p>
         <p>
