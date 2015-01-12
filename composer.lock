@@ -1,26 +1,32 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "d98c93892a80bc9174745643c676c39d",
+    "hash": "5878da413cfb19ab8bcd5c876ac1afb7",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-php",
-            "version": "dev-develop",
+            "version": "v1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bshaffer/oauth2-server-php.git",
-                "reference": "38ef7149fdfc1fc925ead275772adf026e230253"
+                "reference": "74fcc75e47614c1417c750e907a44567d9ceee1f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bshaffer/oauth2-server-php/zipball/38ef7149fdfc1fc925ead275772adf026e230253",
-                "reference": "38ef7149fdfc1fc925ead275772adf026e230253",
+                "url": "https://api.github.com/repos/bshaffer/oauth2-server-php/zipball/74fcc75e47614c1417c750e907a44567d9ceee1f",
+                "reference": "74fcc75e47614c1417c750e907a44567d9ceee1f",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.2.0"
+                "php": ">=5.3.9"
+            },
+            "suggest": {
+                "aws/aws-sdk-php": "Required to use the DynamoDB storage engine",
+                "predis/predis": "Required to use the Redis storage engine",
+                "thobbs/phpcassa": "Required to use the Cassandra storage engine"
             },
             "type": "library",
             "autoload": {
@@ -46,7 +52,7 @@
                 "oauth",
                 "oauth2"
             ],
-            "time": "2013-07-09 05:06:17"
+            "time": "2014-08-28 02:13:42"
         },
         {
             "name": "peej/tonic",
@@ -102,20 +108,12 @@
             "time": "2013-06-02 21:48:37"
         }
     ],
-    "packages-dev": [
-
-    ],
-    "aliases": [
-
-    ],
+    "packages-dev": [],
+    "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "bshaffer/oauth2-server-php": 20
-    },
-    "platform": [
-
-    ],
-    "platform-dev": [
-
-    ]
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
 }
