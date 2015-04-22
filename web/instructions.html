@@ -3,7 +3,11 @@
     <head>
         <title>BolkLogin</title>
 
-
+        <style>
+            p, img {
+                max-width: 60em;
+            }
+        </style>
     </head>
     <body>
         <h1>BolkLogin</h1>
@@ -17,7 +21,6 @@
                 <li><a href="#introduction-to-oauth">Introduction to OAuth2</a></li>
                 <li><a href="#common-process-for-clients">Common process for clients</a></li>
                 <li><a href="#common-process-for-resource-servers">Common process for resource servers</a></li>
-                <li><a href="#api-specification">API specification</a></li>
             </ul>
         </nav>
 
@@ -28,13 +31,15 @@
 
         <h2><a name="common-process-for-clients">Common process for clients</a></h2>
         <p>
-            The process is best described using a flow-chart: <img src="images/clientprocess.jpg" alt="Graphical overview of the OAuth process for clients">
+            The process is best described using a flow-chart: <img src="images/client-process.svg" alt="Graphical overview of the OAuth process for clients">
         </p>
+
         <h3>Step 0: Register your client</h3>
         <p>
             Log in to <a href="http://prism.i.bolkhuis.nl/phpmyadmin">PHPMyAdmin on prism</a>. Register your client in the database named "login", table "oauth_clients". You'll need to enter a client_id, client_pass and redirect_uri.
         </p>
-        <h3>Step 1: Redirect the user to the authorization page</h3>
+
+        <h3>Redirect to authorization server</h3>
         <p>
             Direct the user in a HTML-compatible browser to
         </p>
@@ -58,7 +63,8 @@
         <p>
             You must validate that the returned state parameter is identical to your original parameter. If it is not, warn your user and restart the process, otherwise you are at risk of <a href="http://en.wikipedia.org/wiki/Cross-site_request_forgery">CSRF-attacks</a> (and the authorization token you received probably won't work anyway).
         </p>
-        <h3>Step 2: Change your authentication token for an access token</h3>
+
+        <h3>Exchange authentication token for an access token</h3>
         <p>
             If the user approved your application to access his/her account, you must send a POST-request to the authorization server at the address:
         </p>
@@ -86,7 +92,7 @@
             </code>
         </p>
         <p>
-            The response of the request will contain an access token which you can use to access APIs guarded by the oauth server such as <a href="http://musicbrainz.i.bolkhuis.nl/player/">http://musicbrainz.i.bolkhuis.nl/player</a> (note that this link is the documentation of the particular API, which is not protected). The access token looks like the following:
+            The response of the request will contain an access token which you can use to access resources on behalf of the user. The access token looks like the following:
         </p>
         <p>
             <code>{ "access_token": "fb028dac33e168c60d6558a610cbbaf289f02871", "expires_in": 3600, "token_type": "bearer", "scope": null, "refresh_token": "cfa09ad5ab1c9418c6541c7726360d7b06c47e9b" }</code>
@@ -99,9 +105,32 @@
                 { "error": "invalid_request", "error_description": "The grant type was not specified in the request" }
             </code>
         </p>
-        <h3>Step 3: make a request to the resource server</h3>
+
+        <h3>Validate access token</h3>
         <p>
-            Using your access token, you may make requests to a resource server on behalf of the user. How to send the access token to the server is dependent on the server, but the consensus is to simply append it to an URL, for example:
+            You do this by calling the authorization server at the following url:
+        </p>
+        <p>
+            <code>https://login.i.bolkhuis.nl/resource/?access_token=example</code>
+        </p>
+        <p>
+            If valid, the authorization server will return the full access token, the ID of the user (which you can use to look up the user details in <a href="http://blip.i.bolkhuis.nl">blip</a> and <a href="http://operculum.i.bolkhuis.nl">operculum</a>) and the expiry time of the access token (<a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>-formatted), which looks like this:
+        </p>
+        <p>
+            <code>{"access_token":"example","user_id":"jakob","expires":"2014-09-29T22:37:09+00:00"}</code>
+        </p>
+        <p>
+            If invalid, you should return a 403 Unauthorized header and pass along any error codes from the authorization server to the client in the body. Otherwise you may grant access to the user.
+        </p>
+
+        <h3>Refresh token</h3>
+        <p>
+            TODO
+        </p>
+
+        <h3>Send request to resource server</h3>
+        <p>
+            Using your access token, you may make requests to a resource server on behalf of the user. How to send the access token is dependent on the resource server, but the consensus is to simply append it to an URL, for example:
         </p>
         <p>
             <code>http://musicbrainz.i.bolkhuis.nl/player/mjs/mp3soos?access_token=example</code>
@@ -109,6 +138,19 @@
         <p>The server will verify that your access token is valid and (if it is) execute your request.</p>
 
         <h2><a name="common-process-for-resource-servers">Common process for resource servers</a></h2>
+        <p>
+            The process is best described using a flow-chart: <img src="images/resource-server-process.svg" alt="Graphical overview of the OAuth process for resource servers">
+        </p>
+
+        <h3>Receive request with access token</h3>
+        <p>
+            This is dependent on your server, though the accepted default is to simply append it to the URL:
+        </p>
+        <p>
+            <code>http://server.nl/resource/?access_token=TOKEN</code>
+        </p>
+
+        <h3>Validate access token</h3>
         <p>
             As a resource server, you need to validate access tokens sent to you by clients. You do this by calling the authorization server at the following url:
         </p>
@@ -121,6 +163,11 @@
         <p>
             <code>{"access_token":"example","user_id":"jakob","expires":"2014-09-29T22:37:09+00:00"}</code>
         </p>
+        <p>
+            If invalid, you should return a 403 Unauthorized header and pass along any error codes from the authorization server to the client in the body. Otherwise you may grant access to the user.
+        </p>
+
+        <h3>Check access level</h3>
         <p>
             If the access token checks out, you may grant access on behalf of the specified user. Alternatively, you may check if the user has a specific authorization level. Five authorization levels currently exist:
         </p>
@@ -142,11 +189,6 @@
         </p>
         <p>
             and checking whether the <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">HTTP status code</a> of the response is <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a>.
-        </p>
-
-        <h2><a name="api-specification">API Specification</a></h2>
-        <p>
-            The API consists of a number of end-points which need to be described in further detail (TODO).
         </p>
     </body>
 </html>
