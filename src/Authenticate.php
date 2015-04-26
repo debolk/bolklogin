@@ -36,7 +36,7 @@ class Authenticate extends Tonic\Resource
         /*
          * Step 2a: output the correct form
          */
-        if empty($_POST) {
+        if (empty($_POST)) {
             return $this->showAuthorisationForm();
         }
 
