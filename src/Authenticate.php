@@ -46,7 +46,7 @@ class Authenticate extends Tonic\Resource
         if (!empty($_POST)) {
 
             // Process logouts
-            if ($_POST['logout']) {
+            if (isset($_POST['logout'])) {
                 unset($_SESSION['user_id']);
                 return $this->showAuthorisationForm();
             }
@@ -54,7 +54,7 @@ class Authenticate extends Tonic\Resource
             // Log-in if needed
             if (!$this->loggedIn()) {
                 if (!$this->login($_POST['username'], $_POST['password'])) {
-                    return $this->loginForm('Gebruikersnaam en/of wachtwoord niet correct');
+                    return $this->showAuthorisationForm('Gebruikersnaam en/of wachtwoord niet correct');
                 }
             }
 
