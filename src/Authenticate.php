@@ -6,7 +6,7 @@ class Authenticate extends Tonic\Resource
 {
 
     /**
-     * Shows the login page
+     * Main process for authorizing clients: [login page] -> [authorization page] -> [token]
      * @method GET
      * @method POST
      */
@@ -18,40 +18,57 @@ class Authenticate extends Tonic\Resource
         $request = OAuth2\Request::createFromGlobals();
         $response = new OAuth2\Response();
 
-        // Check parameters for completeness
+        // Check whether all required parameters are supplied
         if (! $this->validateParameters($_GET)) {
+            // Display an error page
             return $this->displayError('Required parameters missing');
         }
 
-        // Return a token if the user has authorized this application before
-        if (! $this->app->server->validateAuthorizeRequest($request, $response)) {
-            return $this->returnToken($response);
+        // If the login form is submitted
+        if (isset($_POST['username'])) {
+            // Attempt to login
+            if (!$this->login($_POST['username'], $_POST['password'])) {
+                return $this->loginForm('Gebruikersnaam en/of wachtwoord niet correct');
+            }
         }
 
+        // If we don't have a session, force a login
         if (! $this->loggedIn()) {
-            // Attempt to login
-            if (isset($_POST['username'])) {
-                $ldap = LdapHelper::Connect();
-                if(@$ldap->bind($_POST['username'], $_POST['password'])) {
-                    $_SESSION['user_id'] = $_POST['username'];
-                    return $this->authorizationForm();
-                }
-                else {
-                    return $this->loginForm('Gebruikersnaam en/of wachtwoord niet correct');
-                }
-            }
             return $this->loginForm();
         }
 
-        // If this is a authorization form submission
+        // At this point, we have a valid sesssion
+        // Check for a prior authorisation, hand out a token if it is
+        if ($this->app->server->validateAuthorizeRequest($request, $response)) {
+            return $this->returnToken($response);
+        }
+
+        // Check for a authorisation form submission, hand out a token if it is
         if (isset($_POST['authorization'])) {
-            $authorization = (bool)($_POST['authorization'] == '1');
+            $authorization = ($_POST['authorization'] == '1');
             $this->app->server->handleAuthorizeRequest($request, $response, $authorization, $_SESSION['user_id']);
             return $this->returnToken($response);
         }
 
-        // Show the authorization form
+        // If not previously authorised, show the authorisation form
         return $this->authorizationForm();
+
+    }
+
+    /**
+     * Login a user
+     * @param  string $username the username given
+     * @param  string $password the password used
+     * @return boolean          whether the attempt succeeded
+     */
+    private function login($username, $password)
+    {
+        $ldap = LdapHelper::Connect();
+        if(@$ldap->bind($username, $password)) {
+            $_SESSION['user_id'] = $_POST['username'];
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -62,7 +79,7 @@ class Authenticate extends Tonic\Resource
     {
         ob_start();
         include('../web/views/login.php');
-        return ob_get_clean(); 
+        return ob_get_clean();
     }
 
     /**
@@ -125,7 +142,7 @@ class Authenticate extends Tonic\Resource
 
         // Strip all FALSE values
         $parameters = array_filter($parameters);
-        
+
         return (sizeof($parameters) === sizeof($required));
     }
 }
