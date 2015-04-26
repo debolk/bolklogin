@@ -19,14 +19,14 @@ $storage = new OAuth2\Storage\Pdo(array(
     'username' => getenv('STORAGE_USER'),
     'password' => getenv('STORAGE_PASS')
 ));
-$server = new OAuth2\Server($storage, [
-    'always_issue_new_refresh_token' => true,
-]);
+$server = new OAuth2\Server($storage);
 $app->server = $server;
 
 $server->addGrantType(new OAuth2\GrantType\ClientCredentials($storage));
 $server->addGrantType(new OAuth2\GrantType\AuthorizationCode($storage));
-$server->addGrantType(new OAuth2\GrantType\RefreshToken($storage));
+$server->addGrantType(new OAuth2\GrantType\RefreshToken($storage, [
+    'always_issue_new_refresh_token' => true
+]));
 
 $request = new Tonic\Request();
 
