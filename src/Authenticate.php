@@ -10,56 +10,66 @@ class Authenticate extends Tonic\Resource
      * @method GET
      * @method POST
      */
-    public function getLoginPage()
+    public function processAuthentication()
     {
+        /*
+         * Step 0: setup and process
+         */
         session_start();
-
-        // Process request into something useable
         $request = OAuth2\Request::createFromGlobals();
         $response = new OAuth2\Response();
 
-        // Check whether all required parameters are supplied
+        /*
+         * Step 1: validate the request is valid and complete
+         */
+
+        // Show an error if required parameters are missing
         if (! $this->validateParameters($_GET)) {
-            // Display an error page
             return $this->displayError('Required parameters missing');
         }
 
-        // If the login form is submitted
-        if (isset($_POST['username'])) {
-            // Attempt to login
-            if (!$this->login($_POST['username'], $_POST['password'])) {
-                return $this->loginForm('Gebruikersnaam en/of wachtwoord niet correct');
+        // Show an error if the request is invalid
+        if (!$this->app->server->validateAuthorizeRequest($request, $response)) {
+            return $this->displayError('Parameters are invalid');
+        }
+
+        /*
+         * Step 2a: output the correct form
+         */
+        if empty($_POST) {
+            return $this->showAuthorisationForm();
+        }
+
+        /*
+         * Step 2b: handle the submission of the form
+         */
+        if (!empty($_POST)) {
+
+            // Process logouts
+            if ($_POST['logout']) {
+                unset($_SESSION['user_id']);
+                return $this->showAuthorisationForm();
             }
-        }
 
-        // If we don't have a session, force a login
-        if (! $this->loggedIn()) {
-            return $this->loginForm();
-        }
+            // Log-in if needed
+            if (!$this->loggedIn()) {
+                if (!$this->login($_POST['username'], $_POST['password'])) {
+                    return $this->loginForm('Gebruikersnaam en/of wachtwoord niet correct');
+                }
+            }
 
-        // At this point, we have a valid sesssion
-        // Check for a prior authorisation, hand out a token if it is
-        if ($this->app->server->validateAuthorizeRequest($request, $response)) {
-            return $this->returnToken($response);
-        }
-
-        // Check for a authorisation form submission, hand out a token if it is
-        if (isset($_POST['authorization'])) {
+            // Process authorisation given
             $authorization = ($_POST['authorization'] == '1');
             $this->app->server->handleAuthorizeRequest($request, $response, $authorization, $_SESSION['user_id']);
             return $this->returnToken($response);
         }
-
-        // If not previously authorised, show the authorisation form
-        return $this->authorizationForm();
-
     }
 
     /**
      * Login a user
-     * @param  string $username the username given
-     * @param  string $password the password used
-     * @return boolean          whether the attempt succeeded
+     * @param  string  $username the username given
+     * @param  string  $password the password used
+     * @return boolean           whether the attempt succeeded
      */
     private function login($username, $password)
     {
@@ -72,27 +82,29 @@ class Authenticate extends Tonic\Resource
     }
 
     /**
-     * Returns the login form
-     * @return string complete HTML form
+     * Print the authorisation form
+     * @param  string $error        optional error to diplay
      */
-    private function loginForm($error = null)
+    private function showAuthorisationForm($error = null)
     {
+        // Get the current user
+        if (isset($_SESSION['user_id'])) {
+            $current_user = $_SESSION['user_id'];
+        }
+        else {
+            $current_user = null;
+        }
+
+        // Output form
         ob_start();
-        include('../web/views/login.php');
+        include('../web/views/authorisation_form.php');
         return ob_get_clean();
     }
 
     /**
-     * Returns the authorization form
-     * @return string complete HTML form
+     * Whether we have a current user loggedin
+     * @return boolean true if logged in, false otherwise
      */
-    private function authorizationForm()
-    {
-        ob_start();
-        include('../web/views/authorize.php');
-        return ob_get_clean();
-    }
-
     private function loggedIn()
     {
         return isset($_SESSION['user_id']);
