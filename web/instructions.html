@@ -125,7 +125,29 @@
 
         <h3>Refresh token</h3>
         <p>
-            TODO
+            Please do not refresh already fresh tokens to reduce server load. Calculate and store the expected expiry time of your access token, minus 50 seconds or so to accomodate for clock drift, and refresh the token only when needed.
+        </p>
+        <p>
+            Using your refresh token, issue a JSON-encoded HTTP request to:
+        </p>
+        <p>
+            <code>https://auth.debolk.nl/token/</code>
+        </p>
+        <p>
+            using the payload:
+        </p>
+        <p>
+            <code>
+                {
+                    "grant_type": "refresh_token",
+                    "refresh_token": "",
+                    "client_id": "",
+                    "client_secret": ""
+                }
+            </code>
+        </p>
+        <p>
+            If succesful, this will return a full new access token (see above for specification) and a full new refresh token. You can and should instantly overwrite your entire currently stored token with the new data. Be sure to update the expected expiry time of your token, if needed.
         </p>
 
         <h3>Send request to resource server</h3>
