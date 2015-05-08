@@ -55,7 +55,7 @@ class Authenticate extends Tonic\Resource
             $authorization = ($_POST['authorization'] == '1');
 
             // Process a negative response
-            if (!$authorisation) {
+            if (! $authorization) {
                 $this->app->server->handleAuthorizeRequest($request, $response, $authorization);
                 return $this->returnToken($response);
             }
