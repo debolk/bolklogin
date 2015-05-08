@@ -51,15 +51,23 @@ class Authenticate extends Tonic\Resource
                 return $this->showAuthorisationForm();
             }
 
-            // Log-in if needed
+            // Determine if the user authorised the application
+            $authorization = ($_POST['authorization'] == '1');
+
+            // Process a negative response
+            if (!$authorisation) {
+                $this->app->server->handleAuthorizeRequest($request, $response, $authorization);
+                return $this->returnToken($response);
+            }
+
+            // A positive affirmation requires a valid login
             if (!$this->loggedIn()) {
                 if (!$this->login($_POST['username'], $_POST['password'])) {
                     return $this->showAuthorisationForm('Gebruikersnaam en/of wachtwoord niet correct');
                 }
             }
 
-            // Process authorisation given
-            $authorization = ($_POST['authorization'] == '1');
+            // Process positive affirmations
             $this->app->server->handleAuthorizeRequest($request, $response, $authorization, $_SESSION['user_id']);
             return $this->returnToken($response);
         }
