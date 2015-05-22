@@ -19,9 +19,13 @@ $storage = new OAuth2\Storage\Pdo(array(
     'username' => getenv('STORAGE_USER'),
     'password' => getenv('STORAGE_PASS')
 ));
+
+// Limit access token times which are acceptable
+$limit = max(1, min(7200, (int)getenv('OAUTH_TOKEN_LIFETIME')));
+
 $server = new OAuth2\Server($storage, [
-    'id_lifetime'     => (int)getenv('OAUTH_TOKEN_LIFETIME'),
-    'access_lifetime' => (int)getenv('OAUTH_TOKEN_LIFETIME'),
+    'id_lifetime'     => $limit,
+    'access_lifetime' => $limit,
 ]);
 $app->server = $server;
 
