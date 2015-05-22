@@ -19,7 +19,10 @@ $storage = new OAuth2\Storage\Pdo(array(
     'username' => getenv('STORAGE_USER'),
     'password' => getenv('STORAGE_PASS')
 ));
-$server = new OAuth2\Server($storage);
+$server = new OAuth2\Server($storage, [
+    'id_lifetime'     => (int)getenv('OAUTH_TOKEN_LIFETIME'),
+    'access_lifetime' => (int)getenv('OAUTH_TOKEN_LIFETIME'),
+]);
 $app->server = $server;
 
 $server->addGrantType(new OAuth2\GrantType\ClientCredentials($storage));
