@@ -13,6 +13,7 @@ class Mp3Control extends DefaultResource {
     /**
      * @method GET
      * @method POST
+     * @method OPTIONS
      */
     function checkMP3Control() {
         $token = $this->app->server->getAccessTokenData(OAuth2\Request::createFromGlobals());

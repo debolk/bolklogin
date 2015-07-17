@@ -13,6 +13,7 @@ class Ictcom extends DefaultResource {
     /**
      * @method GET
      * @method POST
+     * @method OPTIONS
      */
     function checkIctcom() {
         $token = $this->app->server->getAccessTokenData(OAuth2\Request::createFromGlobals());

@@ -13,6 +13,7 @@ class Bekend extends DefaultResource {
     /**
      * @method GET
      * @method POST
+     * @method OPTIONS
      */
     function checkBekend() {
         return $this->checkAuthorized();

@@ -12,6 +12,7 @@ class Lid extends DefaultResource {
     /**
      * @method GET
      * @method POST
+     * @method OPTIONS
      */
     function checkLid() {
         return $this->checkAuthorized();
