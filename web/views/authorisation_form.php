@@ -2,6 +2,9 @@
 <html>
     <head>
         <title>Bolklogin</title>
+
+        <link rel="icon" href="/images/favicon.png">
+
         <style><?php include "stylesheets/application.css"; ?></style>
     </head>
     <body>
