@@ -21,7 +21,7 @@ class ClientCredentials extends Tonic\Resource {
             if($this->app->server->validateAuthorizeRequest($req, $response))
             {
 
-                $this->app->server->handleAuthorizeRequest($req, $response, true, $_SERVER['PHP_AUTH_USER']);
+                $this->app->server->handleAuthorizeRequest($req, $response, true);
             }
 
             $response->send();
