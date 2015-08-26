@@ -224,7 +224,7 @@
             To execute a client credentials grant, send a POST request to
         </p>
         <p>
-            <code>https://auth.debolk.nl/client</code>
+            <code>https://auth.debolk.nl/token</code>
         </p>
         <p>
             with the correct <code>Content-Type: application/json</code> header and the following body:
@@ -244,10 +244,11 @@
         <p>
             <code>
                 {
-                   "access_token":"",
-                   "token_type":"client_credentials",
-                   "expires_in":3600,
-                 }
+                    "access_token":"",
+                    "expires_in":3600,
+                    "token_type":"Bearer",
+                    "scope":null
+                }
             </code>
         </p>
     </body>
