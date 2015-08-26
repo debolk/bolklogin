@@ -23,6 +23,7 @@
                 <li><a href="#introduction-to-oauth">Introduction to OAuth2</a></li>
                 <li><a href="#common-process-for-clients">Common process for clients</a></li>
                 <li><a href="#common-process-for-resource-servers">Common process for resource servers</a></li>
+                <li><a href="#client-credentials-grant">Client credentials grant</a></li>
             </ul>
         </nav>
 
@@ -213,6 +214,39 @@
         </p>
         <p>
             and checking whether the <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">HTTP status code</a> of the response is <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a>.
+        </p>
+
+        <h2><a name="client-credentials-grant">Client credentials grant</a></h2>
+        <p>
+            It is possible for clients to request an access token based solely on their own existence, not an actual user account. These tokens, while valid, have the lowest possible privileges and are only used in very specific scenarios. A proper example is the door lock: the door reads a pass ID through NFC and sends it to the passmanagement API. The Passmanagement API than answers whether the door should grant access. This API call is secured over OAuth, but the door has no user input apart from the pass and therefore cannot allow users to login. The door lock uses a client credentials flow to request an access token, and signs its request to the API with this token. The client credentials grant is in accordance with the OAuth 2 RFC: <a href="https://tools.ietf.org/html/rfc6749#section-4.4">https://tools.ietf.org/html/rfc6749#section-4.4</a>.
+        </p>
+        <p>
+            To execute a client credentials grant, send a POST request to
+        </p>
+        <p>
+            <code>https://auth.debolk.nl/client</code>
+        </p>
+        <p>
+            with the correct <code>Content-Type: application/json</code> header and the following body:
+        </p>
+        <p>
+            <code>
+                {
+                    "grant_type": "client_credentials",
+                    "client_id": "",
+                    "client_secret": ""
+                }
+            </code>
+        </p>
+        <p>
+            If approved, the authorization server will return a valid access token:
+        </p>
+        <p>
+            <code>
+                {
+                    "access_token": ""
+                }
+            </code>
         </p>
     </body>
 </html>
