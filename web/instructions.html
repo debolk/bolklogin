@@ -39,7 +39,7 @@
 
         <h3>Step 0: Register your client</h3>
         <p>
-            Log in to <a href="http://prism.i.bolkhuis.nl/phpmyadmin">PHPMyAdmin on prism</a>. Register your client in the database named "login", table "oauth_clients". You'll need to enter a client_id, client_pass and redirect_uri.
+            Log in to <a href="http://prism.i.bolkhuis.nl/phpmyadmin">PHPMyAdmin on prism</a>. Register your client in the database named "login", table "oauth_clients". You'll need to enter a client_id, client_secret and redirect_uri.
         </p>
 
         <h3>Redirect to authorization server</h3>
@@ -72,7 +72,7 @@
             If the user approved your application to access his/her account, you must send a POST-request to the authorization server at the address:
         </p>
         <p>
-            <code>https://client_id:client_pass@login.i.bolkhuis.nl/token</code> (replacing client_id and client_pass with your values)
+            <code>https://client_id:client_secret@login.i.bolkhuis.nl/token</code> (replacing client_id and client_secret with your values)
         </p>
         <p>
             with the following data encoded as JSON. Be sure to add a correct <code>Content-type: application/json</code> header.
