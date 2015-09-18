@@ -14,11 +14,22 @@ else {
 $app = new Tonic\Application(array(
 	'load' => array('../src/*.php', '../src/resources/*.php'),
 ));
-$storage = new OAuth2\Storage\Pdo(array(
-    'dsn' => getenv('STORAGE_DSN'),
-    'username' => getenv('STORAGE_USER'),
-    'password' => getenv('STORAGE_PASS')
-));
+try {
+    $storage = new OAuth2\Storage\Pdo(array(
+        'dsn' => getenv('STORAGE_DSN'),
+        'username' => getenv('STORAGE_USER'),
+        'password' => getenv('STORAGE_PASS')
+    ));
+}
+catch (PDOException $e) {
+    if (getenv('DEBUG')) {
+        echo $e->getMessage();
+    }
+    else {
+        echo 'Cannot connect to database';
+    }
+    exit(1);
+}
 
 // Limit access token times which are acceptable
 $limit = max(1, min(7200, (int)getenv('OAUTH_TOKEN_LIFETIME')));
