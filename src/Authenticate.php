@@ -143,7 +143,7 @@ class Authenticate extends Tonic\Resource
 
     /**
      * Validates whether all four expected parameters are present in an array
-     * The required keys are client_id, client_secret, redirect_url and state
+     * The required keys are client_id, response_type, redirect_ur and state
      * Extra given parameters are ignored
      * @param  array $parameters
      * @return boolean
