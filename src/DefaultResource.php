@@ -16,17 +16,20 @@ class DefaultResource extends Tonic\Resource {
         }
         $token = $this->app->server->getAccessTokenData($req);
         $uid = $token['user_id'];
-        
+
         $ldap = LdapHelper::Connect();
         foreach($this->groups as $group)
             if($ldap->memberOf($group, $uid))
             {
-                $response = new Tonic\Response(200, '{}');
+                $response = new Tonic\Response(200, json_encode([]));
                 $response->AccessControlAllowOrigin = '*';
                 return $response;
             }
-
-        $response = new Tonic\Response(403, '{"error":"unauthorized", "error_description": "The user is not authorized to do this"}');
+        $error = [
+            'error' => 'unauthorized',
+            'error_description' => 'The user is not authorized to do this'
+        ];
+        $response = new Tonic\Response(403, json_encode($error));
         $response->AccessControlAllowOrigin = '*';
         return $response;
     }
