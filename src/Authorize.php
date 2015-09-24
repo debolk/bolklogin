@@ -1,6 +1,12 @@
 <?php
 /**
  * @uri /authorize
+ *
+ * CAUTION:
+ * This endpoint is obsolete. There are no known clients which use this process.
+ * It is provided here to support clients unknown to us. New clients MUST follow
+ * the new process as described in the documentation (https://auth.debolk.nl),
+ * which is handled by the Authenticate class (src/Authenticate.php)
  */
 class Authorize extends Tonic\Resource {
 
