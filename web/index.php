@@ -1,7 +1,6 @@
 <?php
 
-require_once '../vendor/autoload.php';
-
+// Determine debug settings
 if (getenv('DEBUG')) {
     ini_set('display_errors', 1);
     error_reporting(E_ALL);
@@ -11,6 +10,9 @@ else {
     error_reporting(E_ERROR);
 }
 
+require_once '../vendor/autoload.php';
+
+// Bootstrap application
 $app = new Tonic\Application(array(
 	'load' => array('../src/*.php', '../src/resources/*.php'),
 ));
@@ -34,26 +36,23 @@ catch (PDOException $e) {
 // Limit access token times which are acceptable
 $limit = max(1, min(7200, (int)getenv('OAUTH_TOKEN_LIFETIME')));
 
+// Setup server
 $server = new OAuth2\Server($storage, [
     'id_lifetime'     => $limit,
     'access_lifetime' => $limit,
 ]);
 $app->server = $server;
 
+// All available grant types
 $server->addGrantType(new OAuth2\GrantType\ClientCredentials($storage));
 $server->addGrantType(new OAuth2\GrantType\AuthorizationCode($storage));
 $server->addGrantType(new OAuth2\GrantType\RefreshToken($storage, [
     'always_issue_new_refresh_token' => true
 ]));
 
+// Process request
 $request = new Tonic\Request();
-
 $resource = $app->getResource($request);
-
-/**
- * Convert conventional output from OAuth lib to html
- */
-
 $response = $resource->exec();
 $response->AccessControlAllowOrigin = '*';
 $response->output();
