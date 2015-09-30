@@ -17,6 +17,8 @@
             <p class="error"><?php echo $error; ?></p>
         <?php endif; ?>
 
+        <?= var_dump($_GET); ?>
+
         <form action="<?= $_SERVER['REQUEST_URI'];?>" method="POST">
 
             <?php if ($current_user): ?>

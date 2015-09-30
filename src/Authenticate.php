@@ -103,6 +103,10 @@ class Authenticate extends Tonic\Resource
             $current_user = null;
         }
 
+        // Scope
+        var_dump($this->app->server);
+        // $scopes = $this->app->scopeUtil->
+
         // Output form
         ob_start();
         include('../web/views/authorisation_form.php');

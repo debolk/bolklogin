@@ -50,6 +50,9 @@ $server->addGrantType(new OAuth2\GrantType\RefreshToken($storage, [
     'always_issue_new_refresh_token' => true
 ]));
 
+// Configure available scopes
+$server->setScopeUtil(new Scope);
+
 // Process request
 $request = new Tonic\Request();
 $resource = $app->getResource($request);
