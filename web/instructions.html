@@ -19,12 +19,31 @@
 
         <nav>
             <h2>Index</h2>
-            <ul>
-                <li><a href="#introduction-to-oauth">Introduction to OAuth2</a></li>
-                <li><a href="#common-process-for-clients">Common process for clients</a></li>
-                <li><a href="#common-process-for-resource-servers">Common process for resource servers</a></li>
+            <ol>
+                <li>
+                    <a href="#introduction-to-oauth">Introduction to OAuth2</a>
+                </li>
+                <li>
+                    <a href="#common-process-for-clients">Common process for clients</a>
+                    <ol>
+                        <li><a href="#register-your-client">Register your client</a></li>
+                        <li><a href="#redirect-to-authorization-server">Redirect to authorization server</a></li>
+                        <li><a href="#exchange-authentication-token">Exchange authentication token for an access token</a></li>
+                        <li><a href="#validate-access-token">Validate access token</a></li>
+                        <li><a href="#refresh-token">Refresh token</a></li>
+                        <li><a href="#send-request-to-resource-server">Send request to resource server</a></li>
+                    </ol>
+                </li>
+                <li>
+                    <a href="#common-process-for-resource-servers">Common process for resource servers</a>
+                    <ol>
+                        <li><a href="#receive-request-with-access-token">Receive request with access token</a></li>
+                        <li><a href="#validate-access-token">Validate access token</a></li>
+                        <li><a href="#check-access-level">Check access level</a></li>
+                    </ol>
+                </li>
                 <li><a href="#client-credentials-grant">Client credentials grant</a></li>
-            </ul>
+            </ol>
         </nav>
 
         <h2><a name="introduction-to-oauth">Introducation to OAuth2</a></h2>
@@ -37,12 +56,12 @@
             The process is best described using a flow-chart: <img src="images/client-process.svg" alt="Graphical overview of the OAuth process for clients">
         </p>
 
-        <h3>Step 0: Register your client</h3>
+        <h3><a name="register-your-client">Register your client</a></h3>
         <p>
             Log in to <a href="http://prism.i.bolkhuis.nl/phpmyadmin">PHPMyAdmin on prism</a>. Register your client in the database named "login", table "oauth_clients". You'll need to enter a client_id, client_secret and redirect_uri.
         </p>
 
-        <h3>Redirect to authorization server</h3>
+        <h3><a name="redirect-to-authorization-server">Redirect to authorization server</a></h3>
         <p>
             Direct the user in a HTML-compatible browser to
         </p>
@@ -67,7 +86,7 @@
             You must validate that the returned state parameter is identical to your original parameter. If it is not, warn your user and restart the process, otherwise you are at risk of <a href="http://en.wikipedia.org/wiki/Cross-site_request_forgery">CSRF-attacks</a> (and the authorization token you received probably won't work anyway).
         </p>
 
-        <h3>Exchange authentication token for an access token</h3>
+        <h3><a name="exchange-authentication-token">Exchange authentication token for an access token</a></h3>
         <p>
             If the user approved your application to access his/her account, you must send a POST-request to the authorization server at the address:
         </p>
@@ -109,7 +128,7 @@
             </code>
         </p>
 
-        <h3>Validate access token</h3>
+        <h3><a name="validate-access-token">Validate access token</a></h3>
         <p>
             You do this by calling the authorization server at the following url:
         </p>
@@ -126,7 +145,7 @@
             If invalid, you should return a 403 Unauthorized header and pass along any error codes from the authorization server to the client in the body. Otherwise you may grant access to the user.
         </p>
 
-        <h3>Refresh token</h3>
+        <h3><a name="refresh-token">Refresh token</a></h3>
         <p>
             Please do not refresh already fresh tokens to reduce server load. Calculate and store the expected expiry time of your access token, minus 50 seconds or so to accomodate for clock drift, and refresh the token only when needed.
         </p>
@@ -153,7 +172,7 @@
             If succesful, this will return a full new access token (see above for specification) and a full new refresh token. You can and should instantly overwrite your entire currently stored token with the new data. Be sure to update the expected expiry time of your token, if needed.
         </p>
 
-        <h3>Send request to resource server</h3>
+        <h3><a name="send-request-to-resource-server">Send request to resource server</a></h3>
         <p>
             Using your access token, you may make requests to a resource server on behalf of the user. How to send the access token is dependent on the resource server, but the consensus is to simply append it to an URL, for example:
         </p>
@@ -167,7 +186,7 @@
             The process is best described using a flow-chart: <img src="images/resource-server-process.svg" alt="Graphical overview of the OAuth process for resource servers">
         </p>
 
-        <h3>Receive request with access token</h3>
+        <h3><a name="receive-request-with-access-token">Receive request with access token</a></h3>
         <p>
             This is dependent on your server, though the accepted default is to simply append it to the URL:
         </p>
@@ -175,7 +194,7 @@
             <code>http://server.nl/resource/?access_token=TOKEN</code>
         </p>
 
-        <h3>Validate access token</h3>
+        <h3><a name="validate-access-token">Validate access token</a></h3>
         <p>
             As a resource server, you need to validate access tokens sent to you by clients. You do this by calling the authorization server at the following url:
         </p>
@@ -192,7 +211,7 @@
             If invalid, you should return a 403 Unauthorized header and pass along any error codes from the authorization server to the client in the body. Otherwise you may grant access to the user.
         </p>
 
-        <h3>Check access level</h3>
+        <h3><a name="check-access-level">Check access level</a></h3>
         <p>
             If the access token checks out, you may grant access on behalf of the specified user. Alternatively, you may check if the user has a specific authorization level. Five authorization levels currently exist:
         </p>
