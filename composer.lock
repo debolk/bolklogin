@@ -1,10 +1,11 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "hash": "5878da413cfb19ab8bcd5c876ac1afb7",
+    "content-hash": "a75bb6c9f8c0cdab612de17bf14adacb",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-php",
@@ -60,12 +61,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/peej/tonic.git",
-                "reference": "v3.2"
+                "reference": "e99d7277ff4ce08a0644d5ff083e861e7841a23d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/peej/tonic/zipball/v3.2",
-                "reference": "v3.2",
+                "url": "https://api.github.com/repos/peej/tonic/zipball/e99d7277ff4ce08a0644d5ff083e861e7841a23d",
+                "reference": "e99d7277ff4ce08a0644d5ff083e861e7841a23d",
                 "shasum": ""
             },
             "require": {
