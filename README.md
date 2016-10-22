@@ -11,4 +11,4 @@ OAuth2 authorization server for Bolk-accounts
 1. Point webroot of apache to `web`
 
 ## License
-Unknown. For now, assume all rights reserved 2012-2014 Jakob Buis and Max Maton.
+Copyright 2012-2014,2016 Jakob Buis and Max Maton.
