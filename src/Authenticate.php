@@ -87,7 +87,7 @@ class Authenticate extends Tonic\Resource
     {
         $ldap = LdapHelper::Connect();
         if(@$ldap->bind($username, $password)) {
-            $_SESSION['user_id'] = strtolower($_POST['username']);
+            $_SESSION['user_id'] = strtolower(trim($_POST['username']));
             return true;
         }
         return false;
