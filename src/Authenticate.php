@@ -62,6 +62,7 @@ class Authenticate extends Tonic\Resource
 
             // A positive affirmation requires a valid login
             if (!$this->loggedIn()) {
+                // Allow for leading and trailing spaces in usernames to support mobile use cases
                 $username = trim($_POST['username']);
                 $password = $_POST['password'];
 
