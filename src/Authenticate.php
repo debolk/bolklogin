@@ -62,7 +62,10 @@ class Authenticate extends Tonic\Resource
 
             // A positive affirmation requires a valid login
             if (!$this->loggedIn()) {
-                if (!$this->login($_POST['username'], $_POST['password'])) {
+                $username = trim($_POST['username']);
+                $password = $_POST['password'];
+
+                if (!$this->login($username, $password)) {
                     return $this->showAuthorisationForm('Gebruikersnaam en/of wachtwoord niet correct');
                 }
             }
