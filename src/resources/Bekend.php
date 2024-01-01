@@ -3,11 +3,12 @@
  * @uri /bekend
  */
 class Bekend extends DefaultResource {
-    public $groups = array(
-        'cn=leden,ou=groups,o=nieuwedelft,dc=bolkhuis,dc=nl',
-        'cn=oud-leden,ou=groups,o=nieuwedelft,dc=bolkhuis,dc=nl',
-        'cn=kandidaatleden,ou=groups,o=nieuwedelft,dc=bolkhuis,dc=nl',
-        'cn=oauth-test,ou=groups,o=nieuwedelft,dc=bolkhuis,dc=nl',
+    public $dns = array(
+        'ou=people,ou=leden,o=nieuwedelft,dc=bolkhuis,dc=nl',
+        'ou=people,ou=oudleden,o=nieuwedelft,dc=bolkhuis,dc=nl',
+        'ou=people,ou=kandidaatleden,o=nieuwedelft,dc=bolkhuis,dc=nl',
+        'ou=people,ou=donateurs,o=nieuwedelft,dc=bolkhuis,dc=nl',
+        'ou=people,ou=ledenvanverdienste,o=nieuwedelft,dc=bolkhuis,dc=nl',
     );
 
     /**
@@ -16,6 +17,11 @@ class Bekend extends DefaultResource {
      * @method OPTIONS
      */
     function checkBekend() {
-        return $this->checkAuthorized();
+        $this->checkAuthorized();
+    }
+
+    function checkAuthLDAP($ldap, $uid, $dn)
+    {
+        return $ldap->userExists($dn, $uid);
     }
 }

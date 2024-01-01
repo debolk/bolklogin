@@ -68,6 +68,20 @@ class LdapHelper
         return true;
     }
 
+    /**
+     * Searches the LDAP at base DN for an user
+     * @param $baseDN the base DN to search at
+     * @param $uid the uid of the user to search for
+     * @return bool TRUE if the user exists in the base DN, FALSE if not
+     */
+    public function userExists($baseDN, $uid)
+    {
+        $search = @ldap_search($this->ldap, $baseDN, '(uid=' . $uid . ')');
+        if (!$search)
+            return false;
+        return true;
+    }
+
     public function stripCounts($array)
     {
         unset($array['count']);

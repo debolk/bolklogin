@@ -1,7 +1,7 @@
 <?php
 class DefaultResource extends Tonic\Resource {
 
-    public $groups = array(
+    public $dns = array(
     );
 
     function checkAuthorized() {
@@ -18,8 +18,8 @@ class DefaultResource extends Tonic\Resource {
         $uid = $token['user_id'];
 
         $ldap = LdapHelper::Connect();
-        foreach($this->groups as $group)
-            if($ldap->memberOf($group, $uid))
+        foreach($this->dns as $dn)
+            if($this->checkAuthLDAP($ldap, $uid, $dn))
             {
                 $response = new Tonic\Response(200, json_encode([]));
                 $response->AccessControlAllowOrigin = '*';
@@ -32,5 +32,9 @@ class DefaultResource extends Tonic\Resource {
         $response = new Tonic\Response(403, json_encode($error));
         $response->AccessControlAllowOrigin = '*';
         return $response;
+    }
+
+    function checkAuthLDAP($ldap, $uid, $dn){
+        return $ldap->memberOf($dn, $uid);
     }
 }
