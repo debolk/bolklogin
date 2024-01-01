@@ -59,10 +59,10 @@ class LdapHelper
                 break;
             }
 
-        if(!isset($group['memberuid']))
+        if(!isset($group['memberUid']))
             return false;
 
-        if(!in_array($uid, $group['memberuid']))
+        if(!in_array($uid, $group['memberUid']))
             return false;
 
         return true;
