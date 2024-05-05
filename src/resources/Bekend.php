@@ -7,7 +7,6 @@ class Bekend extends DefaultResource {
         'cn=leden,ou=groups,o=nieuwedelft,dc=bolkhuis,dc=nl',
         'cn=oud-leden,ou=groups,o=nieuwedelft,dc=bolkhuis,dc=nl',
         'cn=kandidaatleden,ou=groups,o=nieuwedelft,dc=bolkhuis,dc=nl',
-        'cn=oauth-test,ou=groups,o=nieuwedelft,dc=bolkhuis,dc=nl',
     );
 
     /**

@@ -7,7 +7,6 @@ class Ictcom extends DefaultResource {
         'cn=nieuwedelft-bestuur,ou=groups,o=nieuwedelft,dc=bolkhuis,dc=nl',
         'cn=ictcom,ou=groups,o=nieuwedelft,dc=bolkhuis,dc=nl',
         'cn=beheer,ou=groups,dc=bolkhuis,dc=nl',
-        'cn=oauth-test,ou=groups,o=nieuwedelft,dc=bolkhuis,dc=nl',
     );
 
     /**
