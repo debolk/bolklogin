@@ -4,8 +4,9 @@
  */
 class Lid extends DefaultResource {
     public $groups = array(
-        'cn=leden,ou=groups,o=nieuwedelft,dc=bolkhuis,dc=nl',
-        'cn=kandidaatleden,ou=groups,o=nieuwedelft,dc=bolkhuis,dc=nl',
+        'ou=people,ou=leden,o=nieuwedelft,dc=i,dc=bolkhuis,dc=nl',
+        'ou=people,ou=kandidaatleden,o=nieuwedelft,dc=i,dc=bolkhuis,dc=nl',
+        'ou=people,ou=ledenvanverdienste,o=nieuwedelft,dc=i,dc=bolkhuis,dc=nl',
     );
 
     /**

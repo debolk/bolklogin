@@ -4,9 +4,9 @@
  */
 class Mp3Control extends DefaultResource {
     public $groups = array(
-        'cn=ictcom,ou=groups,o=nieuwedelft,dc=bolkhuis,dc=nl',
-        'cn=nieuwedelft-bestuur,ou=groups,o=nieuwedelft,dc=bolkhuis,dc=nl',
-        'cn=beheer,ou=groups,dc=bolkhuis,dc=nl',
+        'cn=ictcom,ou=groups,o=nieuwedelft,dc=i,dc=bolkhuis,dc=nl',
+        'cn=bestuur,ou=groups,o=nieuwedelft,dc=i,dc=bolkhuis,dc=nl',
+        'cn=beheer,ou=groups,o=nieuwedelft,dc=i,dc=bolkhuis,dc=nl',
     );
 
     /**
