@@ -30,7 +30,6 @@ class Authenticate extends Tonic\Resource
 
         // Show an error if the request is invalid
         if (!$this->app->server->validateAuthorizeRequest($request, $response)) {
-            $status = $response.getStatusText();
             $error = $response.getParameter('error');
             $error_description = $response.getParameter('error_description');
             return $this->displayError('Parameters are invalid');
