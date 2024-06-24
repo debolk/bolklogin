@@ -13,6 +13,9 @@ CREATE TABLE IF NOT EXISTS `oauth_authorization_codes` (
   `redirect_uri` varchar(2000) DEFAULT NULL,
   `expires` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `scope` varchar(2000) DEFAULT NULL
+  `id_token` varchar(1000) DEFAULT NULL
+  `code_challenge` varchar(6400) DEFAULT NULL
+  `code_challenge_method` varchar(6400) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `oauth_clients` (
