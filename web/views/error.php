@@ -13,7 +13,7 @@
             <?= $error_message; ?>
         </p>
         <p>
-            <a href="mailto:ictcom@nieuwedelft.nl">Meld dit probleem aan de ICTcom</a>
+            <a href="mailto:beheer@nieuwedelft.nl">Meld dit probleem aan het Beheer</a>
         </p>
     </body>
 </html>
