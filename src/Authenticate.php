@@ -33,7 +33,7 @@ class Authenticate extends Tonic\Resource
             $status = $response.getStatusText();
             $error = $response.getParameter('error');
             $error_description = $response.getParameter('error_description')}
-            return $this->displayError("Parameters are invalid $error_description");
+            return $this->displayError($error_description);
         }
 
         /*
