@@ -15,8 +15,9 @@ class LdapHelper
 
     public function __construct()
     {
-        $this->ldap = ldap_connect(getenv('LDAP_HOST'));
+        $this->ldap = @ldap_connect(getenv('LDAP_HOST'));
         $this->basedn = getenv('LDAP_BASE');
+        ldap_set_option($this->ldap, LDAP_OPT_PROTOCOL_VERSION, 3); //sets ldap protocol to v3; the server won't accept otherwise
     }
 
     public function escapeArgument($argument)
@@ -32,7 +33,8 @@ class LdapHelper
     public function bind($uid, $pass)
     {
         $uid = $this->escapeArgument($uid);
-        $users = @ldap_search($this->ldap, $basedn, '(uid=' . $uid . ')');
+
+        $users = @ldap_search($this->ldap, $this->basedn, '(uid=' . $uid . ')');
         if(!$users || ldap_count_entries($this->ldap, $users) == 0)
             return false;
         $users = ldap_get_entries($this->ldap, $users);
