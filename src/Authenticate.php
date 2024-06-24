@@ -32,7 +32,7 @@ class Authenticate extends Tonic\Resource
         if (!$this->app->server->validateAuthorizeRequest($request, $response)) {
             $status = $response.getStatusText();
             $error = $response.getParameter('error');
-            $error_description = $response.getParameter('error_description')}
+            $error_description = $response.getParameter('error_description');
             return $this->displayError('Parameters are invalid');
         }
 
