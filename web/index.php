@@ -17,11 +17,10 @@ $app = new Tonic\Application(array(
 	'load' => array('../src/*.php', '../src/resources/*.php'),
 ));
 try {
-    $storage = new OAuth2\Storage\Pdo(array(
-        'dsn' => getenv('STORAGE_DSN'),
-        'username' => getenv('STORAGE_USER'),
-        'password' => getenv('STORAGE_PASS')
-    ));
+    $pdo = new PDO(getenv('STORAGE_DSN')
+    , getenv('STORAGE_USER')
+    , getenv('STORAGE_PASS'));
+    $storage = new OAuth2\Storage\Pdo($pdo);
 }
 catch (PDOException $e) {
     if (getenv('DEBUG')) {
