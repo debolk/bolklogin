@@ -10,7 +10,8 @@ class ControllerToken extends ControllerBase {
 
 	public function process_request(Request $request, Response $response, array $args): Response {
 		$req = OAuth2\Request::createFromGlobals();
-		return ResponseHelper::convertFromOAuth($this->server->handleTokenRequest($req));
+		$res = $this->server->handleTokenRequest($req);
+		return ResponseHelper::convertFromOAuth($res);
 	}
 
 }

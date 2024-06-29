@@ -1,6 +1,5 @@
 <?php
 
-use ControllerBase;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 
@@ -34,11 +33,12 @@ class ControllerAuthorize extends ControllerBase {
 			if (isset($_POST['logout'])) {
 				unset($_SESSION['user_id']);
 				unset($_SESSION['user_fullname']);
-				return $this->displayAuthForm($response);
+				return $this->displayAuthForm();
 			}
 
 			//did the user authorise the application?
 			$authorization = ($_POST['authorization'] == '1');
+
 
 			//process the user not authorizing
 			if (!$authorization) {
@@ -48,7 +48,7 @@ class ControllerAuthorize extends ControllerBase {
 
 			} else if (!$this->isLoggedIn()) { //if the user did authorize, we need to process the login
 
-				$username = trim($_POST('username'));
+				$username = trim($_POST['username']);
 				$password = $_POST['password'];
 
 				if (!$this->loginUser($username, $password)) {
@@ -64,35 +64,24 @@ class ControllerAuthorize extends ControllerBase {
 	}
 
 	/**
-	 * Helper function to display a html file
-	 *
-	 * @param string $htmlFile the html file to display
-	 * @return Response
-	 */
-	private function displayHTML(string $htmlFile) : Response {
-
-		//get contents of provided html file and write to response
-		//start output buffering
-		ob_start();
-
-		//include the php file and execute code within
-		include($htmlFile);
-
-		//get content from the output buffer and save it in $html
-		$html = ob_get_clean();
-
-		//write content to Response with text/html content-type
-		return ResponseHelper::data($this->response, $html, 'text/html');
-	}
-
-	/**
 	 * Helper function to display php errors
 	 *
 	 * @param string $error_message the error message
 	 * @return Response
 	 */
 	private function displayError(string $error_message): Response {
-		return $this->displayHTML( '../web/views/error.php');
+		//get contents of provided html file and write to response
+		//start output buffering
+		ob_start();
+
+		//include the php file and execute code within
+		include('../web/views/error.php');
+
+		//get content from the output buffer and save it in $html
+		$html = ob_get_clean();
+
+		//write content to Response with text/html content-type
+		return ResponseHelper::data($this->response, $html, 'text/html');
 	}
 
 	/**
@@ -109,7 +98,18 @@ class ControllerAuthorize extends ControllerBase {
 			$user_fullname = $_SESSION['user_fullname'];
 		}
 
-		return $this->displayHTML('../web/views/authorisation_form.php');
+		//get contents of provided html file and write to response
+		//start output buffering
+		ob_start();
+
+		//include the php file and execute code within
+		include('../web/views/authorisation_form.php');
+
+		//get content from the output buffer and save it in $html
+		$html = ob_get_clean();
+
+		//write content to Response with text/html content-type
+		return ResponseHelper::data($this->response, $html, 'text/html');
 	}
 
 	/**

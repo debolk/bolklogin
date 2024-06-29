@@ -36,8 +36,8 @@ class ResponseHelper
     }
 
 	public static function set_headers(Response $response, array $headers) : Response {
-		foreach ($headers as $header) {
-			$response = $response->withAddedHeader($response, $header);
+		foreach ($headers as $k => $v) {
+			$response = $response->withAddedHeader($k, $v);
 		}
 		return $response;
 	}

@@ -37,11 +37,9 @@ class LdapHelper
         $users = ldap_search($this->ldap, $this->basedn, '(uid=' . $uid . ')');
         if(!$users || ldap_count_entries($this->ldap, $users) == 0)
             return false;
-        $user = ldap_first_entry($this->ldap, $users);
+		$user = ldap_get_dn($this->ldap, ldap_first_entry($this->ldap, $users));
 
-        $dn = $user['dn'];
-
-        return ldap_bind($this->ldap, $dn, $pass);
+        return ldap_bind($this->ldap, $user, $pass);
     }
 
 	public function getName($uid) {
@@ -49,10 +47,9 @@ class LdapHelper
 		if (!$users || ldap_count_entries($this->ldap, $users) == 0) {
 			return false;
 		}
-		$user = ldap_first_entry($this->ldap, $users);
-		$attrs = ldap_get_attributes($this->ldap, $user);
-		if (isset($attrs['fdNickname'])) return "{$attrs['givenName']} \"{$attrs['fdNickname']}\" {$attrs['sn']}";
-		else return "{$attrs['givenName']} {$attrs['sn']}";
+		$user = ldap_get_attributes($this->ldap, ldap_first_entry($this->ldap, $users));
+		if (isset($user['fdNickname'])) return "{$user['givenName'][0]} \"{$user['fdNickname'][0]}\" {$user['sn'][0]}";
+		else return "{$user['givenName'][0]} {$user['sn'][0]}";
 	}
 
     public function memberOf($groupdn, $uid)
