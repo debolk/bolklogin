@@ -40,7 +40,6 @@ $server = new OAuth2\Server($storage, [
 	'id_lifetime'	 => $limit,
 	'access_lifetime' => $limit,
 ]);
-$app['server'] = $server;
 
 // All available grant types
 $server->addGrantType(new OAuth2\GrantType\ClientCredentials($storage));
