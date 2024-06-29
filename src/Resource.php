@@ -1,45 +1,44 @@
 <?php
-/**
- * @uri /resource
- */
-class Resource extends Tonic\Resource {
 
-    /**
-     * @method OPTIONS
-     */
-    function options()
-    {
-        header('Access-Control-Allow-Origin: *');
-        header('Access-Control-Allow-Methods: GET, OPTIONS');
-        header('Access-Control-Allow-Headers: Content-Type');
-        header('Access-Control-Max-Age: 1728000');  // 20 days
-        header('Content-Length: 0');
-        header('Content-Type: text/plain charset=UTF-8');
-        exit(0);
-    }
+use OAuth2\Server;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 
-    /**
-     * @method GET
-     */
-    function getAccessTokenInformation()
-    {
-        $request = OAuth2\Request::createFromGlobals();
+class Resource {
 
-        // Validate request, returning error if it's not
-        if(!$this->app->server->verifyResourceRequest($request))
-        {
-            $response = ResourceHelper::OutputToResponse(function() {
-                    $this->app->server->getResponse()->send();
-            });
-            return $response;
-        }
+	protected Server $server;
+	protected array $groups = [];
 
-        // Return crucial token data if the access_token is valid
-        $token = $this->app->server->getAccessTokenData($request);
-        return new Tonic\Response(200, json_encode([
-            'access_token' => $token['access_token'],
-            'user_id'      => $token['user_id'],
-            'expires'      => date("c", $token['expires']),
-        ]));
-    }
+	function __construct(Server $server, array $groups) {
+		$this->server = $server;
+		foreach ($groups as $group) {
+			$this->groups[] = $group . ',' . getenv('LDAP_BASEDN');
+		}
+	}
+
+	public function checkAuthorized(Request $request, Response $response, array $args): Response {
+		$req = \OAuth2\Request::createFromGlobals();
+
+		//verify the request
+		if (!$this->server->verifyResourceRequest($req)) {
+			return ResponseHelper::convertFromOAuth($this->server->getResponse());
+		}
+
+		$token = $this->server->getAccessTokenData($req);
+		$uid = $token['user_id'];
+
+		$ldap = LdapHelper::Connect();
+
+		//check all groups of the resource, if the user is not in any of the groups, return not authorized
+		foreach($this->groups as $group) {
+			if ($ldap->memberOf($group, $uid)) {
+				return ResponseHelper::create($response, 200, 'OK');
+			}
+		}
+		return ResponseHelper::create($response, 403, json_encode([
+			'error' => 'unauthorized',
+			'error_description' => 'The user is not authorized to do this'
+		]));
+	}
+
 }
