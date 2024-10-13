@@ -1,9 +1,9 @@
-SetEnv STORAGE_DSN            mysql:dbname=database;host=localhost
-SetEnv STORAGE_USER           username
-SetEnv STORAGE_PASS           password
-SetEnv LDAP_HOST              ldap
-SetEnv LDAP_BASEDN            dc=example,dc=com
-SetEnv DEBUG                  0
+SetEnv STORAGE_DSN			mysql:dbname=database;host=localhost
+SetEnv STORAGE_USER		   username
+SetEnv STORAGE_PASS		   password
+SetEnv LDAP_HOST			  ldap
+SetEnv LDAP_BASEDN			dc=example,dc=com
+SetEnv DEBUG				  0
 
 SetEnv OAUTH_TOKEN_LIFETIME   3600
 

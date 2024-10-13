@@ -34,19 +34,27 @@ class LdapHelper
     {
         $uid = $this->escapeArgument($uid);
 
-        $users = @ldap_search($this->ldap, $this->basedn, '(uid=' . $uid . ')');
+        $users = ldap_search($this->ldap, $this->basedn, '(uid=' . $uid . ')');
         if(!$users || ldap_count_entries($this->ldap, $users) == 0)
             return false;
-        $users = ldap_get_entries($this->ldap, $users);
+		$user = ldap_get_dn($this->ldap, ldap_first_entry($this->ldap, $users));
 
-        $dn = $users[0]['dn'];
-
-        return ldap_bind($this->ldap, $dn, $pass);
+        return ldap_bind($this->ldap, $user, $pass);
     }
+
+	public function getName($uid) {
+		$users = ldap_search($this->ldap, $this->basedn, "(uid=$uid)", ['givenName', 'fdNickname', 'sn']);
+		if (!$users || ldap_count_entries($this->ldap, $users) == 0) {
+			return false;
+		}
+		$user = ldap_get_attributes($this->ldap, ldap_first_entry($this->ldap, $users));
+		if (isset($user['fdNickname'])) return "{$user['givenName'][0]} \"{$user['fdNickname'][0]}\" {$user['sn'][0]}";
+		else return "{$user['givenName'][0]} {$user['sn'][0]}";
+	}
 
     public function memberOf($groupdn, $uid)
     {
-        $groups = @ldap_search($this->ldap, $groupdn, '(objectClass=posixGroup)');
+        $groups = ldap_search($this->ldap, $groupdn, '(objectClass=posixGroup)');
 
         if(!$groups || ldap_count_entries($this->ldap, $groups) == 0)
             throw new Exception("Group '" . $groupdn . "' not found!");

@@ -1,133 +1,134 @@
 <doctype html>
 <html>
-    <head>
-        <title>BolkLogin</title>
+	<head>
+		<title>BolkLogin</title>
 
-        <link rel="icon" href="/images/favicon.png">
+		<link rel="icon" href="/images/favicon.png">
 
-        <style>
-            p, img {
-                max-width: 60em;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>BolkLogin</h1>
-        <p>
-            You've reached the OAuth 2 authorization server for De Bolk.
-        </p>
+		<style>
+			p, img {
+				max-width: 60em;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>BolkLogin</h1>
+		<p>
+			You've reached the OAuth 2 authorization server for De Bolk.
+		</p>
 
-        <nav>
-            <h2>Index</h2>
-            <ol>
-                <li>
-                    <a href="#introduction-to-oauth">Introduction to OAuth2</a>
-                </li>
-                <li>
-                    <a href="#common-process-for-clients">Common process for clients</a>
-                    <ol>
-                        <li><a href="#register-your-client">Register your client</a></li>
-                        <li><a href="#redirect-to-authorization-server">Redirect to authorization server</a></li>
-                        <li><a href="#exchange-authentication-token">Exchange authentication token for an access token</a></li>
-                        <li><a href="#validate-access-token">Validate access token</a></li>
-                        <li><a href="#refresh-token">Refresh token</a></li>
-                        <li><a href="#send-request-to-resource-server">Send request to resource server</a></li>
-                    </ol>
-                </li>
-                <li>
-                    <a href="#common-process-for-resource-servers">Common process for resource servers</a>
-                    <ol>
-                        <li><a href="#receive-request-with-access-token">Receive request with access token</a></li>
-                        <li><a href="#validate-access-token">Validate access token</a></li>
-                        <li><a href="#check-access-level">Check access level</a></li>
-                    </ol>
-                </li>
-                <li><a href="#client-credentials-grant">Client credentials grant</a></li>
-            </ol>
-        </nav>
+		<nav>
+			<h2>Index</h2>
+			<ol>
+				<li>
+					<a href="#introduction-to-oauth">Introduction to OAuth2</a>
+				</li>
+				<li>
+					<a href="#common-process-for-clients">Common process for clients</a>
+					<ol>
+						<li><a href="#register-your-client">Register your client</a></li>
+						<li><a href="#redirect-to-authorization-server">Redirect to authorization server</a></li>
+						<li><a href="#exchange-authentication-token">Exchange authentication token for an access token</a></li>
+						<li><a href="#validate-access-token">Validate access token</a></li>
+						<li><a href="#refresh-token">Refresh token</a></li>
+						<li><a href="#send-request-to-resource-server">Send request to resource server</a></li>
+					</ol>
+				</li>
+				<li>
+					<a href="#common-process-for-resource-servers">Common process for resource servers</a>
+					<ol>
+						<li><a href="#receive-request-with-access-token">Receive request with access token</a></li>
+						<li><a href="#validate-access-token">Validate access token</a></li>
+						<li><a href="#check-access-level">Check access level</a></li>
+					</ol>
+				</li>
+				<li><a href="#client-credentials-grant">Client credentials grant</a></li>
+			</ol>
+		</nav>
 
-        <h2><a name="introduction-to-oauth">Introducation to OAuth2</a></h2>
-        <p>
-            Read the excellent <a href="https://www.digitalocean.com/community/tutorials/an-introduction-to-oauth-2">introduction to OAuth2 by DigitalOcean</a> to understand the terminology and process involved in an OAuth 2 authorization process.
-        </p>
+		<h2><a name="introduction-to-oauth">Introducation to OAuth2</a></h2>
+		<p>
+			Read the excellent <a href="https://www.digitalocean.com/community/tutorials/an-introduction-to-oauth-2">introduction to OAuth2 by DigitalOcean</a> to understand the terminology and process involved in an OAuth 2 authorization process.
+		</p>
 
-        <h2><a name="common-process-for-clients">Common process for clients</a></h2>
-        <p>
-            The process is best described using a flow-chart: <img src="images/client-process.svg" alt="Graphical overview of the OAuth process for clients">
-        </p>
+		<h2><a name="common-process-for-clients">Common process for clients</a></h2>
+		<p>
+			The process is best described using a flow-chart: <img src="images/client-process.svg" alt="Graphical overview of the OAuth process for clients">
+		</p>
 
-        <h3><a name="register-your-client">Register your client</a></h3>
-        <p>
-            Log in to <a href="http://prism.i.bolkhuis.nl/phpmyadmin">PHPMyAdmin on prism</a>. Register your client in the database named "login", table "oauth_clients". You'll need to enter a client_id, client_secret and redirect_uri.
-        </p>
+		<h3><a name="register-your-client">Register your client</a></h3>
+		<p>
+			Log in to <a href="http://prism.i.bolkhuis.nl/phpmyadmin">PHPMyAdmin on prism</a>. Register your client in the database named "login", table "oauth_clients". You'll need to enter a client_id, client_secret and redirect_uri.
+		</p>
 
-        <h3><a name="redirect-to-authorization-server">Redirect to authorization server</a></h3>
-        <p>
-            Direct the user in a HTML-compatible browser to
-        </p>
-        <p>
-            <code>https://auth.debolk.nl/authenticate?response_type=code&amp;client_id=example&amp;redirect_uri=http://example.org&amp;state=123456</code>
-        </p>
-        <p>
-            with the details of your application added. The state parameter must be randomly generated. The authorization server will ask the client to log in and confirm that he/she will allow your application access to his/her account.
-        </p>
-        <p>
-            If the user agrees, the authorization server will redirect the browser back to your application (redirect_uri) with a "code" and a "state" parameter:
-        </p>
-        <p>
-            <code>http://example.org/?code=2a134b08d15a90e5901f24a98a129&amp;state=123456</code>
-        </p>
-        <p> The code parameter is your authorization token. It is valid for only a few seconds. You must trade it in for an access token in step 2.
-        </p>
-        <p>
-            If the user disapproves, the authorization server will redirect back to your application too, but with a "error" and "error_description" parameter explaining the cause, for example: <code>http://example.org?error=access_denied&amp;error_description=The+user+denied+access+to+your+application&amp;state=1</code>.
-        </p>
-        <p>
-            You must validate that the returned state parameter is identical to your original parameter. If it is not, warn your user and restart the process, otherwise you are at risk of <a href="http://en.wikipedia.org/wiki/Cross-site_request_forgery">CSRF-attacks</a> (and the authorization token you received probably won't work anyway).
-        </p>
+		<h3><a name="redirect-to-authorization-server">Redirect to authorization server</a></h3>
+		<p>
+			Direct the user in a HTML-compatible browser to
+		</p>
+		<p>
+			<code>https://auth.debolk.nl/authenticate?response_type=code&amp;client_id=example&amp;redirect_uri=http://example.org&amp;state=123456</code>
+		</p>
+		<p>
+			with the details of your application added. The state parameter must be randomly generated. The authorization server will ask the client to log in and confirm that he/she will allow your application access to his/her account.
+		</p>
+		<p>
+			If the user agrees, the authorization server will redirect the browser back to your application (redirect_uri) with a "code" and a "state" parameter:
+		</p>
+		<p>
+			<code>http://example.org/?code=2a134b08d15a90e5901f24a98a129&amp;state=123456</code>
+		</p>
+		<p> The code parameter is your authorization token. It is valid for only a few seconds. You must trade it in for an access token in step 2.
+		</p>
+		<p>
+			If the user disapproves, the authorization server will redirect back to your application too, but with a "error" and "error_description" parameter explaining the cause, for example: <code>http://example.org?error=access_denied&amp;error_description=The+user+denied+access+to+your+application&amp;state=1</code>.
+		</p>
+		<p>
+			You must validate that the returned state parameter is identical to your original parameter. If it is not, warn your user and restart the process, otherwise you are at risk of <a href="http://en.wikipedia.org/wiki/Cross-site_request_forgery">CSRF-attacks</a> (and the authorization token you received probably won't work anyway).
+		</p>
 
-        <h3><a name="exchange-authentication-token">Exchange authentication token for an access token</a></h3>
-        <p>
-            If the user approved your application to access his/her account, you must send a POST-request to the authorization server at the address:
-        </p>
-        <p>
-            <code>https://client_id:client_secret@login.i.bolkhuis.nl/token</code> (replacing client_id and client_secret with your values)
-        </p>
-        <p>
-            with the following data encoded as JSON. Be sure to add a correct <code>Content-type: application/json</code> header.
-        </p>
-        <p>
-            <code>{ "grant_type":"authorization_code", "redirect_uri":"http://example.org/", "code":"example-authorization-token" }</code>
-        </p>
-        <p>
-            Alternatively, you may also use the endpoint <code>https://login.i.bolkhuis.nl/token</code> and supply all parameters in valid JSON:
-        </p>
-        <p>
-            <code>
-                {
-                    "grant_type":"authorization_code",
-                    "redirect_uri":"http://example.org/",
-                    "code":"example-authorization-token",
-                    "client_id": "",
-                    "client_secret": ""
-                }
-            </code>
-        </p>
-        <p>
-            The response of the request will contain an access token which you can use to access resources on behalf of the user. The access token looks like the following:
-        </p>
-        <p>
-            <code>{ "access_token": "fb028dac33e168c60d6558a610cbbaf289f02871", "expires_in": 3600, "token_type": "bearer", "scope": null, "refresh_token": "cfa09ad5ab1c9418c6541c7726360d7b06c47e9b" }</code>
-        </p>
-        <p>
-            If your request fails for some reason, the server will return an error and an error description, like this:
-        </p>
-        <p>
-            <code>
-                { "error": "invalid_request", "error_description": "The grant type was not specified in the request" }
-            </code>
-        </p>
+		<h3><a name="exchange-authentication-token">Exchange authentication token for an access token</a></h3>
+		<p>
+			If the user approved your application to access his/her account, you must send a POST-request to the authorization server at the address:
+		</p>
+		<p>
+			<code>https://client_id:client_secret@login.i.bolkhuis.nl/token</code> (replacing client_id and client_secret with your values)
+		</p>
+		<p>
+			with the following data encoded as JSON. Be sure to add a correct <code>Content-type: application/json</code> header.
+		</p>
+		<p>
+			<code>{ "grant_type":"authorization_code", "redirect_uri":"http://example.org/", "code":"example-authorization-token" }</code>
+		</p>
+		<p>
+			Alternatively, you may also use the endpoint <code>https://login.i.bolkhuis.nl/token</code> and supply all parameters in valid JSON:
+		</p>
+		<p>
+			<code>
+				{
+					"grant_type":"authorization_code",
+					"redirect_uri":"http://example.org/",
+					"code":"example-authorization-token",
+					"client_id": "",
+					"client_secret": ""
+				}
+			</code>
+		</p>
+		<p>
+			The response of the request will contain an access token which you can use to access resources on behalf of the user. The access token looks like the following:
+		</p>
+		<p>
+			<code>{ "access_token": "fb028dac33e168c60d6558a610cbbaf289f02871", "expires_in": 3600, "token_type": "bearer", "scope": null, "refresh_token": "cfa09ad5ab1c9418c6541c7726360d7b06c47e9b" }</code>
+		</p>
+		<p>
+			If your request fails for some reason, the server will return an error and an error description, like this:
+		</p>
+		<p>
+			<code>
+				{ "error": "invalid_request", "error_description": "The grant type was not specified in the request" }
+			</code>
+		</p>
 
+<<<<<<< HEAD
         <h3><a name="validate-access-token">Validate access token</a></h3>
         <p>
             You do this by calling the authorization server at the following url:
@@ -144,128 +145,146 @@
         <p>
             If invalid, you should return a 403 Unauthorized header and pass along any error codes from the authorization server to the client in the body. Otherwise you may grant access to the user.
         </p>
+=======
+		<h3><a name="validate-access-token">Validate access token</a></h3>
+		<p>
+			You do this by calling the authorization server at the following url:
+		</p>
+		<p>
+			<code>https://login.i.bolkhuis.nl/resource/?access_token=example</code>
+		</p>
+		<p>
+			If valid, the authorization server will return the full access token, the ID of the user (which you can use to look up the user details in <a href="http://blip.i.bolkhuis.nl">blip</a> and <a href="http://operculum.i.bolkhuis.nl">operculum</a>) and the expiry time of the access token (<a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>-formatted), which looks like this:
+		</p>
+		<p>
+			<code>{"access_token":"example","user_id":"jakob","expires":"2014-09-29T22:37:09+00:00"}</code>
+		</p>
+		<p>
+			If invalid, you should return a 403 Unauthorized header and pass along any error codes from the authorization server to the client in the body. Otherwise you may grant access to the user.
+		</p>
+>>>>>>> refs/remotes/origin/master
 
-        <h3><a name="refresh-token">Refresh token</a></h3>
-        <p>
-            Please do not refresh already fresh tokens to reduce server load. Calculate and store the expected expiry time of your access token, minus 50 seconds or so to accomodate for clock drift, and refresh the token only when needed.
-        </p>
-        <p>
-            Using your refresh token, issue a JSON-encoded HTTP request to:
-        </p>
-        <p>
-            <code>https://auth.debolk.nl/token/</code>
-        </p>
-        <p>
-            using the payload:
-        </p>
-        <p>
-            <code>
-                {
-                    "grant_type": "refresh_token",
-                    "refresh_token": "",
-                    "client_id": "",
-                    "client_secret": ""
-                }
-            </code>
-        </p>
-        <p>
-            If succesful, this will return a full new access token (see above for specification) and a full new refresh token. You can and should instantly overwrite your entire currently stored token with the new data. Be sure to update the expected expiry time of your token, if needed.
-        </p>
+		<h3><a name="refresh-token">Refresh token</a></h3>
+		<p>
+			Please do not refresh already fresh tokens to reduce server load. Calculate and store the expected expiry time of your access token, minus 50 seconds or so to accomodate for clock drift, and refresh the token only when needed.
+		</p>
+		<p>
+			Using your refresh token, issue a JSON-encoded HTTP request to:
+		</p>
+		<p>
+			<code>https://auth.debolk.nl/token/</code>
+		</p>
+		<p>
+			using the payload:
+		</p>
+		<p>
+			<code>
+				{
+					"grant_type": "refresh_token",
+					"refresh_token": "",
+					"client_id": "",
+					"client_secret": ""
+				}
+			</code>
+		</p>
+		<p>
+			If succesful, this will return a full new access token (see above for specification) and a full new refresh token. You can and should instantly overwrite your entire currently stored token with the new data. Be sure to update the expected expiry time of your token, if needed.
+		</p>
 
-        <h3><a name="send-request-to-resource-server">Send request to resource server</a></h3>
-        <p>
-            Using your access token, you may make requests to a resource server on behalf of the user. How to send the access token is dependent on the resource server, but the consensus is to simply append it to an URL, for example:
-        </p>
-        <p>
-            <code>http://musicbrainz.i.bolkhuis.nl/player/mjs/mp3soos?access_token=example</code>
-        </p>
-        <p>The server will verify that your access token is valid and (if it is) execute your request.</p>
+		<h3><a name="send-request-to-resource-server">Send request to resource server</a></h3>
+		<p>
+			Using your access token, you may make requests to a resource server on behalf of the user. How to send the access token is dependent on the resource server, but the consensus is to simply append it to an URL, for example:
+		</p>
+		<p>
+			<code>http://musicbrainz.i.bolkhuis.nl/player/mjs/mp3soos?access_token=example</code>
+		</p>
+		<p>The server will verify that your access token is valid and (if it is) execute your request.</p>
 
-        <h2><a name="common-process-for-resource-servers">Common process for resource servers</a></h2>
-        <p>
-            The process is best described using a flow-chart: <img src="images/resource-server-process.svg" alt="Graphical overview of the OAuth process for resource servers">
-        </p>
+		<h2><a name="common-process-for-resource-servers">Common process for resource servers</a></h2>
+		<p>
+			The process is best described using a flow-chart: <img src="images/resource-server-process.svg" alt="Graphical overview of the OAuth process for resource servers">
+		</p>
 
-        <h3><a name="receive-request-with-access-token">Receive request with access token</a></h3>
-        <p>
-            This is dependent on your server, though the accepted default is to simply append it to the URL:
-        </p>
-        <p>
-            <code>http://server.nl/resource/?access_token=TOKEN</code>
-        </p>
+		<h3><a name="receive-request-with-access-token">Receive request with access token</a></h3>
+		<p>
+			This is dependent on your server, though the accepted default is to simply append it to the URL:
+		</p>
+		<p>
+			<code>http://server.nl/resource/?access_token=TOKEN</code>
+		</p>
 
-        <h3><a name="validate-access-token">Validate access token</a></h3>
-        <p>
-            As a resource server, you need to validate access tokens sent to you by clients. You do this by calling the authorization server at the following url:
-        </p>
-        <p>
-            <code>https://login.i.bolkhuis.nl/resource/?access_token=example</code>
-        </p>
-        <p>
-            If valid, the authorization server will return the full access token, the ID of the user (which you can use to look up the user details in <a href="http://blip.i.bolkhuis.nl">blip</a> and <a href="http://operculum.i.bolkhuis.nl">operculum</a>) and the expiry time of the access token (<a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>-formatted), which looks like this:
-        </p>
-        <p>
-            <code>{"access_token":"example","user_id":"jakob","expires":"2014-09-29T22:37:09+00:00"}</code>
-        </p>
-        <p>
-            If invalid, you should return a 403 Unauthorized header and pass along any error codes from the authorization server to the client in the body. Otherwise you may grant access to the user.
-        </p>
+		<h3><a name="validate-access-token">Validate access token</a></h3>
+		<p>
+			As a resource server, you need to validate access tokens sent to you by clients. You do this by calling the authorization server at the following url:
+		</p>
+		<p>
+			<code>https://login.i.bolkhuis.nl/resource/?access_token=example</code>
+		</p>
+		<p>
+			If valid, the authorization server will return the full access token, the ID of the user (which you can use to look up the user details in <a href="http://blip.i.bolkhuis.nl">blip</a> and <a href="http://operculum.i.bolkhuis.nl">operculum</a>) and the expiry time of the access token (<a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>-formatted), which looks like this:
+		</p>
+		<p>
+			<code>{"access_token":"example","user_id":"jakob","expires":"2014-09-29T22:37:09+00:00"}</code>
+		</p>
+		<p>
+			If invalid, you should return a 403 Unauthorized header and pass along any error codes from the authorization server to the client in the body. Otherwise you may grant access to the user.
+		</p>
 
-        <h3><a name="check-access-level">Check access level</a></h3>
-        <p>
-            If the access token checks out, you may grant access on behalf of the specified user. Alternatively, you may check if the user has a specific authorization level. Five authorization levels currently exist:
-        </p>
-        <ul>
-            <li><strong>bestuur: </strong> members of beheer or bestuur</li>
-            <li><strong>ictcom: </strong> members of beheer, bestuur or ictcom</li>
-            <li><strong>lid: </strong> members of the society (does not include candidate-members)</li>
-            <li><strong>bekend: </strong> members, former members and candidate-members of the society</li>
-            <li><strong>mp3control: </strong> members of beheer and bestuur (this level is used to control access to the API of the mp3-computers)</li>
-        </ul>
-        <p>
-            You can check whether the current user can access the authorization level "ictcom" for example by requesting the URL:
-        </p>
-        <p>
-            <code>https://login.i.bolkhuis.nl/ictcom/?access_token=example-access-token</code>
-        </p>
-        <p>
-            and checking whether the <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">HTTP status code</a> of the response is <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a>.
-        </p>
+		<h3><a name="check-access-level">Check access level</a></h3>
+		<p>
+			If the access token checks out, you may grant access on behalf of the specified user. Alternatively, you may check if the user has a specific authorization level. Five authorization levels currently exist:
+		</p>
+		<ul>
+			<li><strong>bestuur: </strong> members of beheer or bestuur</li>
+			<li><strong>ictcom: </strong> members of beheer, bestuur or ictcom</li>
+			<li><strong>lid: </strong> members of the society (does not include candidate-members)</li>
+			<li><strong>bekend: </strong> members, former members and candidate-members of the society</li>
+			<li><strong>mp3control: </strong> members of beheer and bestuur (this level is used to control access to the API of the mp3-computers)</li>
+		</ul>
+		<p>
+			You can check whether the current user can access the authorization level "ictcom" for example by requesting the URL:
+		</p>
+		<p>
+			<code>https://login.i.bolkhuis.nl/ictcom/?access_token=example-access-token</code>
+		</p>
+		<p>
+			and checking whether the <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">HTTP status code</a> of the response is <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a>.
+		</p>
 
-        <h2><a name="client-credentials-grant">Client credentials grant</a></h2>
-        <p>
-            It is possible for clients to request an access token based solely on their own existence, not an actual user account. These tokens, while valid, have the lowest possible privileges and are only used in very specific scenarios. A proper example is the door lock: the door reads a pass ID through NFC and sends it to the passmanagement API. The Passmanagement API than answers whether the door should grant access. This API call is secured over OAuth, but the door has no user input apart from the pass and therefore cannot allow users to login. The door lock uses a client credentials flow to request an access token, and signs its request to the API with this token. The client credentials grant is in accordance with the OAuth 2 RFC: <a href="https://tools.ietf.org/html/rfc6749#section-4.4">https://tools.ietf.org/html/rfc6749#section-4.4</a>.
-        </p>
-        <p>
-            To execute a client credentials grant, send a POST request to
-        </p>
-        <p>
-            <code>https://auth.debolk.nl/token</code>
-        </p>
-        <p>
-            with the correct <code>Content-Type: application/json</code> header and the following body:
-        </p>
-        <p>
-            <code>
-                {
-                    "grant_type": "client_credentials",
-                    "client_id": "",
-                    "client_secret": ""
-                }
-            </code>
-        </p>
-        <p>
-            If approved, the authorization server will return a valid access token:
-        </p>
-        <p>
-            <code>
-                {
-                    "access_token":"",
-                    "expires_in":3600,
-                    "token_type":"Bearer",
-                    "scope":null
-                }
-            </code>
-        </p>
-    </body>
+		<h2><a name="client-credentials-grant">Client credentials grant</a></h2>
+		<p>
+			It is possible for clients to request an access token based solely on their own existence, not an actual user account. These tokens, while valid, have the lowest possible privileges and are only used in very specific scenarios. A proper example is the door lock: the door reads a pass ID through NFC and sends it to the passmanagement API. The Passmanagement API than answers whether the door should grant access. This API call is secured over OAuth, but the door has no user input apart from the pass and therefore cannot allow users to login. The door lock uses a client credentials flow to request an access token, and signs its request to the API with this token. The client credentials grant is in accordance with the OAuth 2 RFC: <a href="https://tools.ietf.org/html/rfc6749#section-4.4">https://tools.ietf.org/html/rfc6749#section-4.4</a>.
+		</p>
+		<p>
+			To execute a client credentials grant, send a POST request to
+		</p>
+		<p>
+			<code>https://auth.debolk.nl/token</code>
+		</p>
+		<p>
+			with the correct <code>Content-Type: application/json</code> header and the following body:
+		</p>
+		<p>
+			<code>
+				{
+					"grant_type": "client_credentials",
+					"client_id": "",
+					"client_secret": ""
+				}
+			</code>
+		</p>
+		<p>
+			If approved, the authorization server will return a valid access token:
+		</p>
+		<p>
+			<code>
+				{
+					"access_token":"",
+					"expires_in":3600,
+					"token_type":"Bearer",
+					"scope":null
+				}
+			</code>
+		</p>
+	</body>
 </html>
