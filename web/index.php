@@ -12,10 +12,6 @@ else {
 
 require_once '../vendor/autoload.php';
 
-// Bootstrap application
-$app = new Tonic\Application(array(
-	'load' => array('../src/*.php', '../src/resources/*.php'),
-));
 try {
     $pdo = new PDO(getenv('STORAGE_DSN')
     , getenv('STORAGE_USER')
@@ -49,9 +45,4 @@ $server->addGrantType(new OAuth2\GrantType\RefreshToken($storage, [
     'always_issue_new_refresh_token' => true
 ]));
 
-// Process request
-$request = new Tonic\Request();
-$resource = $app->getResource($request);
-$response = $resource->exec();
-$response->AccessControlAllowOrigin = '*';
-$response->output();
+$app->

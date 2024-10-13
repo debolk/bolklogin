@@ -1,6 +1,7 @@
 {
 	"require": {
 		"bshaffer/oauth2-server-php": "~1.14.1",
-		"peej/tonic": "~3.3.0"
-	}
+		"peej/tonic": "~3.3.0",
+      "ext-pdo": "*"
+    }
 }
