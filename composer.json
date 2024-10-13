@@ -1,11 +1,6 @@
 {
 	"require": {
 		"bshaffer/oauth2-server-php": "~1.14.1",
-<<<<<<< HEAD
-		"peej/tonic": "~3.3.0",
-      "ext-pdo": "*"
-    }
-=======
 		"slim/slim-skeleton": "^4.5",
 		"slim/psr7": "^1.7",
 	  "ext-pdo": "*",
@@ -16,5 +11,4 @@
 			"php": "8.3.8"
 		}
 	}
->>>>>>> refs/remotes/origin/master
 }

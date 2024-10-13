@@ -22,12 +22,9 @@ require('../src/controllers/ControllerResource.php');
 require('../src/controllers/ControllerToken.php');
 require('../src/Resource.php');
 
-<<<<<<< HEAD
-=======
 // Bootstrap application
 $app = Slim\Factory\AppFactory::create();
 
->>>>>>> refs/remotes/origin/master
 try {
 	$storage = new \OAuth2\Storage\Pdo(array(
 		'dsn' => getenv('STORAGE_DSN'),
@@ -61,7 +58,6 @@ $server->addGrantType(new OAuth2\GrantType\RefreshToken($storage, [
 	'always_issue_new_refresh_token' => true
 ]));
 
-<<<<<<< HEAD
 $app->
 =======
 //initialise Resource classes
@@ -140,4 +136,3 @@ $app->post('/bestuur', [$bestuur, 'checkAuthorized']);
 $app->options('/bestuur', [$bestuur, 'options']);
 
 $app->run();
->>>>>>> refs/remotes/origin/master
