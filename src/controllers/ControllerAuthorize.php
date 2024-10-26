@@ -39,7 +39,6 @@ class ControllerAuthorize extends ControllerBase {
 			//did the user authorise the application?
 			$authorization = ($_POST['authorization'] == '1');
 
-
 			//process the user not authorizing
 			if (!$authorization) {
 
@@ -54,11 +53,10 @@ class ControllerAuthorize extends ControllerBase {
 				if (!$this->loginUser($username, $password)) {
 					return $this->displayAuthForm('Username and/or password invalid');
 				}
-
 			}
 
 			//process authorization
-			$this->server->handleAuthorizeRequest($req, $res, true);
+			$this->server->handleAuthorizeRequest($req, $res, true, $_SESSION['user_id']);
 			return $this->returnToken($res);
 		}
 	}
