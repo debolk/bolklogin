@@ -128,22 +128,22 @@
 			</code>
 		</p>
 
-		<h3><a name="validate-access-token">Validate access token</a></h3>
-		<p>
-			You do this by calling the authorization server at the following url:
-		</p>
-		<p>
-			<code>https://login.i.bolkhuis.nl/resource/?access_token=example</code>
-		</p>
-		<p>
-			If valid, the authorization server will return the full access token, the ID of the user (which you can use to look up the user details in <a href="http://blip.i.bolkhuis.nl">blip</a> and <a href="http://operculum.i.bolkhuis.nl">operculum</a>) and the expiry time of the access token (<a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>-formatted), which looks like this:
-		</p>
-		<p>
-			<code>{"access_token":"example","user_id":"jakob","expires":"2014-09-29T22:37:09+00:00"}</code>
-		</p>
-		<p>
-			If invalid, you should return a 403 Unauthorized header and pass along any error codes from the authorization server to the client in the body. Otherwise you may grant access to the user.
-		</p>
+        <h3><a name="validate-access-token">Validate access token</a></h3>
+        <p>
+            You do this by calling the authorization server at the following url:
+        </p>
+        <p>
+            <code>https://login.i.bolkhuis.nl/resource?access_token=example</code>
+        </p>
+        <p>
+            If valid, the authorization server will return the full access token, the ID of the user (which you can use to look up the user details in <a href="http://blip.i.bolkhuis.nl">blip</a> and <a href="http://operculum.i.bolkhuis.nl">operculum</a>) and the expiry time of the access token (<a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>-formatted), which looks like this:
+        </p>
+        <p>
+            <code>{"access_token":"example","user_id":"jakob","expires":"2014-09-29T22:37:09+00:00"}</code>
+        </p>
+        <p>
+            If invalid, you should return a 403 Unauthorized header and pass along any error codes from the authorization server to the client in the body. Otherwise you may grant access to the user.
+        </p>
 
 		<h3><a name="refresh-token">Refresh token</a></h3>
 		<p>
