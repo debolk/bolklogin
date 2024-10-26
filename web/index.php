@@ -58,8 +58,6 @@ $server->addGrantType(new OAuth2\GrantType\RefreshToken($storage, [
 	'always_issue_new_refresh_token' => true
 ]));
 
-$app->
-=======
 //initialise Resource classes
 $authenticate = new ControllerAuthorize($server);
 $resource = new ControllerResource($server);
