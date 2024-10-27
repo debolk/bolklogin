@@ -12,10 +12,13 @@ class Resource {
 	function __construct(Server $server, array $groups) {
 		$this->server = $server;
 		foreach ($groups as $group) {
-			$this->groups[] = $group . ',' . getenv('LDAP_BASEDN');
+			$this->groups[] = $group . ',' . LdapHelper::Connect()->getBaseDn();
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function checkAuthorized(Request $request, Response $response, array $args): Response {
 		$req = \OAuth2\Request::createFromGlobals();
 

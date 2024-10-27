@@ -2,3 +2,4 @@ vendor
 .htaccess
 .idea/
 packages.txt
+web/config.php

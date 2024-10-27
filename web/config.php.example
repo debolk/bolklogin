@@ -1,0 +1,11 @@
+<?php
+
+return [
+	'STORAGE_DSN' => "mysql:dbname=login;host=localhost",
+	'STORAGE_USER' => "root",
+	'STORAGE_PASS' => "dbsecret",
+	'LDAP_HOST' => "ldap://localhost",
+	'LDAP_BASE' => "dc=example,dc=com",
+	'DEBUG' => "0",
+	'OAUTH_TOKEN_LIFETIME' => "3600"
+];

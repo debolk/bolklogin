@@ -3,20 +3,24 @@ class LdapHelper
 {
     static private $instance = null;
 
-    static function Connect() {
+    static function Connect() : LdapHelper {
         if(self::$instance == null)
-            self::$instance = new LdapHelper;
+            syslog(LOG_ERR, "Connection to LDAP server not initialised!");
 
         return self::$instance;
     }
 
+	static function Initialise($ldap_host, $ldap_base): void {
+		self::$instance = new LdapHelper($ldap_host, $ldap_base);
+	}
+
     protected $ldap;
     protected $basedn;
 
-    public function __construct()
+    public function __construct($ldap_host, $ldap_base)
     {
-        $this->ldap = @ldap_connect(getenv('LDAP_HOST'));
-        $this->basedn = getenv('LDAP_BASE');
+        $this->ldap = @ldap_connect($ldap_host);
+        $this->basedn = $ldap_base;
         ldap_set_option($this->ldap, LDAP_OPT_PROTOCOL_VERSION, 3); //sets ldap protocol to v3; the server won't accept otherwise
     }
 
@@ -29,6 +33,10 @@ class LdapHelper
                      "\x00" => '\00');
         return str_replace(array_keys($sanitized),array_values($sanitized),$argument);
     }
+
+	public function getBaseDn() {
+		return $this->basedn;
+	}
 
     public function bind($uid, $pass)
     {
@@ -52,12 +60,18 @@ class LdapHelper
 		else return "{$user['givenName'][0]} {$user['sn'][0]}";
 	}
 
-    public function memberOf($groupdn, $uid)
-    {
-        $groups = ldap_search($this->ldap, $groupdn, '(objectClass=posixGroup)');
+	/**
+	 * @throws Exception
+	 */
+	public function memberOf($groupdn, $uid): bool {
+        $groups = ldap_search($this->ldap, $groupdn, '(|(objectClass=posixGroup)(objectClass=organizationalUnit))');
 
         if(!$groups || ldap_count_entries($this->ldap, $groups) == 0)
-            throw new Exception("Group '" . $groupdn . "' not found!");
+			if (str_starts_with($groupdn, "ou=people")) {
+				return false;
+			} else {
+				throw new Exception("Group '" . $groupdn . "' not found!");
+			}
 
         $groups = $this->stripCounts(ldap_get_entries($this->ldap, $groups));
         

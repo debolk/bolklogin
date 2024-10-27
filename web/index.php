@@ -4,7 +4,9 @@
 use Slim\Handlers\Strategies\RequestResponse;
 use Slim\Handlers\Strategies\RequestResponseArgs;
 
-if (getenv('DEBUG')) {
+$config = require('config.php');
+
+if ($config['DEBUG']) {
 	ini_set('display_errors', 1);
 	error_reporting(E_ALL);
 }
@@ -24,16 +26,18 @@ require('../src/Resource.php');
 
 // Bootstrap application
 $app = Slim\Factory\AppFactory::create();
+syslog(LOG_ERR, $config['LDAP_BASE']);
+LdapHelper::Initialise($config['LDAP_HOST'], $config['LDAP_BASE']);
 
 try {
 	$storage = new \OAuth2\Storage\Pdo(array(
-		'dsn' => getenv('STORAGE_DSN'),
-		'username' => getenv('STORAGE_USER'),
-		'password' => getenv('STORAGE_PASS'))
+		'dsn' => $config['STORAGE_DSN'],
+		'username' => $config['STORAGE_USER'],
+		'password' => $config['STORAGE_PASS'])
 	);
 }
 catch (PDOException $e) {
-	if (getenv('DEBUG')) {
+	if ($config['DEBUG']) {
 		echo $e->getMessage();
 	}
 	else {
@@ -43,7 +47,7 @@ catch (PDOException $e) {
 }
 
 // Limit access token times which are acceptable
-$limit = max(1, min(7200, (int)getenv('OAUTH_TOKEN_LIFETIME')));
+$limit = max(1, min(7200, (int)$config['OAUTH_TOKEN_LIFETIME']));
 
 // Setup server
 $server = new OAuth2\Server($storage, [
@@ -66,14 +70,14 @@ $token = new ControllerToken($server);
 $bekend = new Resource($server, [
 	'ou=people,ou=kandidaatleden,o=nieuwedelft',
 	'ou=people,ou=oudleden,o=nieuwedelft',
-	'ou=people,ou=ereleden,o=nieuwedelft',
 	'ou=people,ou=leden,o=nieuwedelft',
-	'ou=people,ou=ledenvanverdienste,o=nieuwedelft'
+	'ou=people,ou=ledenvanverdienste,o=nieuwedelft',
+	'ou=people,ou=ereleden,o=nieuwedelft'
 ]);
 $lid = new Resource($server, [
 	'ou=people,ou=leden,o=nieuwedelft',
-	'ou=people,ou=ereleden,o=nieuwedelft',
 	'ou=people,ou=ledenvanverdienste,o=nieuwedelft',
+	'ou=people,ou=ereleden,o=nieuwedelft'
 ]);
 $ictcom = new Resource($server, [
 	'cn=ictcom,ou=groups,o=nieuwedelft',
