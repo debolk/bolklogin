@@ -64,14 +64,13 @@ class LdapHelper
 	 * @throws Exception
 	 */
 	public function memberOf($groupdn, $uid): bool {
-        $groups = ldap_search($this->ldap, $groupdn, '(|(objectClass=posixGroup)(objectClass=organizationalUnit))');
+		if (str_starts_with($groupdn, "ou=people")) return $this->inOrganizationUnit($groupdn, $uid);
 
-        if(!$groups || ldap_count_entries($this->ldap, $groups) == 0)
-			if (str_starts_with($groupdn, "ou=people")) {
-				return false;
-			} else {
-				throw new Exception("Group '" . $groupdn . "' not found!");
-			}
+		$groups = ldap_search($this->ldap, $groupdn, '(|(objectClass=posixGroup)(objectClass=organizationalUnit))');
+
+		if (!$groups || ldap_count_entries($this->ldap, $groups) == 0) {
+			throw new Exception("Group '" . $groupdn . "' not found!");
+		}
 
         $groups = $this->stripCounts(ldap_get_entries($this->ldap, $groups));
         
@@ -91,6 +90,14 @@ class LdapHelper
 
         return true;
     }
+
+	private function inOrganizationUnit($oudn, $uid): bool {
+		$users = ldap_search($this->ldap, $oudn, "(&(objectClass=fdBolkData)(uid=$uid))");
+
+		if (!$users || ldap_count_entries($this->ldap, $users) == 0) return false;
+
+		return true;
+	}
 
     public function stripCounts($array)
     {
