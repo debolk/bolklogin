@@ -90,6 +90,7 @@ class Authenticate extends Tonic\Resource
             $_SESSION['user_id'] = strtolower(trim($_POST['username']));
             return true;
         }
+	error_log('Failed login attempt for [' . $username . ']'); // For fail2ban logging
         return false;
     }
 
