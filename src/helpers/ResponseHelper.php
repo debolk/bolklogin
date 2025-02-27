@@ -35,6 +35,10 @@ class ResponseHelper
         return $response->withHeader("Content-Type", 'application/json');
     }
 
+	public static function option(Response $response, string $method): Response {
+		return $response->withStatus(204)->withHeader('Allow', $method);
+	}
+
 	public static function set_headers(Response $response, array $headers) : Response {
 		foreach ($headers as $k => $v) {
 			$response = $response->withAddedHeader($k, $v);

@@ -110,6 +110,7 @@ $app->options('/authorize', [$authenticate, 'options']);
 
 //validate access token with access_token
 $app->get('/resource', array($resource, 'process'));
+$app->get('/resource/', array($resource, 'process'));
 $app->options('/resource', [$resource, 'options']);
 
 //get access token from server with client_id and client_secret in json body

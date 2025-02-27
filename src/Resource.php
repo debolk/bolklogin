@@ -8,12 +8,14 @@ class Resource {
 
 	protected Server $server;
 	protected array $groups = [];
+	protected string $method;
 
-	function __construct(Server $server, array $groups) {
+	function __construct(Server $server, array $groups, string $method = 'OPTIONS, GET, POST') {
 		$this->server = $server;
 		foreach ($groups as $group) {
 			$this->groups[] = $group . ',' . LdapHelper::Connect()->getBaseDn();
 		}
+		$this->method = $method;
 	}
 
 	/**
@@ -44,4 +46,7 @@ class Resource {
 		]));
 	}
 
+	public function options(Request $request, Response $response, array $args) {
+		return ResponseHelper::option($response, $this->method);
+	}
 }
