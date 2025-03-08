@@ -64,7 +64,6 @@ class LdapHelper
 	 * @throws Exception
 	 */
 	public function memberOf($groupdn, $uid): bool {
-		if (str_starts_with($groupdn, "ou=people")) return $this->inOrganizationUnit($groupdn, $uid);
 
 		$groups = ldap_search($this->ldap, $groupdn, '(|(objectClass=posixGroup)(objectClass=organizationalUnit))');
 
@@ -85,19 +84,13 @@ class LdapHelper
         if(!isset($group['memberuid']))
             return false;
 
+		syslog(LOG_DEBUG, var_export($group['memberuid'], true));
+
         if(!in_array($uid, $group['memberuid']))
             return false;
 
         return true;
     }
-
-	private function inOrganizationUnit($oudn, $uid): bool {
-		$users = ldap_search($this->ldap, $oudn, "(&(objectClass=fdBolkData)(uid=$uid))");
-
-		if (!$users || ldap_count_entries($this->ldap, $users) == 0) return false;
-
-		return true;
-	}
 
     public function stripCounts($array)
     {

@@ -37,7 +37,11 @@ class Resource {
 		//check all groups of the resource, if the user is not in any of the groups, return not authorized
 		foreach($this->groups as $group) {
 			if ($ldap->memberOf($group, $uid)) {
-				return ResponseHelper::create($response, 200, 'OK');
+				return ResponseHelper::json($response, json_encode([
+					'access_token' => $token['access_token'],
+					'user_id' => $token['user_id'],
+					'expires' => date("c", $token['expires']),
+				]));
 			}
 		}
 		return ResponseHelper::create($response, 403, json_encode([

@@ -68,25 +68,32 @@ $resource = new ControllerResource($server);
 $token = new ControllerToken($server);
 //access levels
 $bekend = new Resource($server, [
-	'ou=people,ou=kandidaatleden,o=nieuwedelft',
-	'ou=people,ou=oudleden,o=nieuwedelft',
-	'ou=people,ou=leden,o=nieuwedelft',
-	'ou=people,ou=ledenvanverdienste,o=nieuwedelft',
-	'ou=people,ou=ereleden,o=nieuwedelft'
+	'cn=kandidaatleden,ou=groups,o=nieuwedelft',
+	'cn=oud-leden,ou=groups,o=nieuwedelft',
+	'cn=leden,ou=groups,o=nieuwedelft',
+	'cn=ledenvanverdienste,ou=groups,o=nieuwedelft',
+	'cn=ereleden,ou=groups,o=nieuwedelft',
+	'cn=externen,ou=groups,o=nieuwedelft',
+	'cn=ictcom,ou=groups,l=commissies,o=nieuwedelft',
+	'cn=bestuur,ou=groups,l=bestuur,o=nieuwedelft',
+	'cn=beheer,ou=groups,l=commissies,o=nieuwedelft'
 ]);
 $lid = new Resource($server, [
-	'ou=people,ou=leden,o=nieuwedelft',
-	'ou=people,ou=ledenvanverdienste,o=nieuwedelft',
-	'ou=people,ou=ereleden,o=nieuwedelft'
+	'cn=leden,ou=groups,o=nieuwedelft',
+	'cn=ledenvanverdienste,ou=groups,o=nieuwedelft',
+	'cn=ereleden,ou=groups,o=nieuwedelft',
+	'cn=ictcom,ou=groups,l=commissies,o=nieuwedelft',
+	'cn=bestuur,ou=groups,l=bestuur,o=nieuwedelft',
+	'cn=beheer,ou=groups,l=commissies,o=nieuwedelft'
 ]);
 $ictcom = new Resource($server, [
-	'cn=ictcom,ou=groups,o=nieuwedelft',
-	'cn=bestuur,ou=groups,o=nieuwedelft',
-	'cn=beheer,ou=groups,o=nieuwedelft'
+	'cn=ictcom,ou=groups,l=commissies,o=nieuwedelft',
+	'cn=bestuur,ou=groups,l=bestuur,o=nieuwedelft',
+	'cn=beheer,ou=groups,l=commissies,o=nieuwedelft'
 ]);
 $bestuur = new Resource($server, [
-	'cn=bestuur,ou=groups,o=nieuwedelft',
-	'cn=beheer,ou=groups,o=nieuwedelft'
+	'cn=bestuur,ou=groups,l=bestuur,o=nieuwedelft',
+	'cn=beheer,ou=groups,l=commissies,o=nieuwedelft'
 ]);
 
 $app->getRouteCollector()->setDefaultInvocationStrategy(new RequestResponse());
