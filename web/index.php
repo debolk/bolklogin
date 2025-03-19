@@ -20,14 +20,22 @@ require('../src/helpers/LdapHelper.php');
 require('../src/helpers/ResponseHelper.php');
 require('../src/controllers/ControllerBase.php');
 require('../src/controllers/ControllerAuthorize.php');
+require('../src/controllers/ControllerPassword.php');
 require('../src/controllers/ControllerResource.php');
 require('../src/controllers/ControllerToken.php');
 require('../src/Resource.php');
 
+//Open log
+openlog("bolklogin", LOG_PID | LOG_PERROR, LOG_LOCAL0);
+
 // Bootstrap application
 $app = Slim\Factory\AppFactory::create();
-syslog(LOG_ERR, $config['LDAP_BASE']);
-LdapHelper::Initialise($config['LDAP_HOST'], $config['LDAP_BASE']);
+$ldap = LdapHelper::Initialise($config['LDAP_HOST'], $config['LDAP_BASE']);
+if ($ldap->getStartTLS()) {
+	syslog(LOG_INFO, "Successfully started STARTTLS connection with LDAP server.");
+} else {
+	syslog(LOG_ERR, "Unable to start STARTTLS connection with LDAP server.");
+}
 
 try {
 	$storage = new \OAuth2\Storage\Pdo(array(
@@ -64,6 +72,7 @@ $server->addGrantType(new OAuth2\GrantType\RefreshToken($storage, [
 
 //initialise Resource classes
 $authenticate = new ControllerAuthorize($server);
+$password = new ControllerPassword($server);
 $resource = new ControllerResource($server);
 $token = new ControllerToken($server);
 //access levels
@@ -110,6 +119,10 @@ $app->get('/authenticate', [$authenticate, 'process']);
 $app->post('/authenticate', [$authenticate, 'process']);
 $app->options('/authenticate', [$authenticate, 'options']);
 
+$app->get('/password', [$password, 'process']);
+$app->post('/password', [$password, 'process']);
+$app->options('/password', [$password, 'process']);
+
 //redirect to this with response_type=code client_id, redirect_uri & state
 $app->get('/authorize', array($authenticate, 'process'));
 $app->post('/authorize', array($authenticate, 'process'));
@@ -146,3 +159,4 @@ $app->post('/bestuur', [$bestuur, 'checkAuthorized']);
 $app->options('/bestuur', [$bestuur, 'options']);
 
 $app->run();
+closelog();

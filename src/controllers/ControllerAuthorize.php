@@ -31,9 +31,7 @@ class ControllerAuthorize extends ControllerBase {
 
 			//process logouts
 			if (isset($_POST['logout'])) {
-				unset($_SESSION['user_id']);
-				unset($_SESSION['user_fullname']);
-				return $this->displayAuthForm();
+				return $this->logout();
 			}
 
 			//did the user authorise the application?
@@ -55,10 +53,20 @@ class ControllerAuthorize extends ControllerBase {
 				}
 			}
 
+			if (LdapHelper::Connect()->getPasswordReset($_SESSION['user_id'])){
+				return $this->displayAuthForm('<a href="https://auth.i.bolkhuis.nl/password">Please change your password.</a><br>Or ask the Board for help.');
+			}
+
 			//process authorization
 			$this->server->handleAuthorizeRequest($req, $res, true, $_SESSION['user_id']);
 			return $this->returnToken($res);
 		}
+	}
+
+	protected function logout() {
+		unset($_SESSION['user_id']);
+		unset($_SESSION['user_fullname']);
+		return $this->displayAuthForm();
 	}
 
 	/**
@@ -88,7 +96,7 @@ class ControllerAuthorize extends ControllerBase {
 	 * @param string|null $error if applicable, the error to display from an earlier attempt
 	 * @return Response
 	 */
-	private function displayAuthForm(string $error = null): Response {
+	protected function displayAuthForm(string $error = null): Response {
 		$user = null;
 		$user_fullname = null;
 		if ($this->isLoggedIn()){
@@ -148,7 +156,7 @@ class ControllerAuthorize extends ControllerBase {
 	 * Function to check whether a logged in user is present
 	 * @return bool true if logged in, else false
 	 */
-	private function isLoggedIn() : bool {
+	protected function isLoggedIn() : bool {
 		return isset($_SESSION['user_id']);
 	}
 
@@ -159,7 +167,7 @@ class ControllerAuthorize extends ControllerBase {
 	 * @param string $password
 	 * @return bool  true if logged in, else false
 	 */
-	private function loginUser(string $username, string $password) {
+	protected function loginUser(string $username, string $password): bool {
 		$ldap = LdapHelper::Connect();
 
 		if($ldap->bind($username, $password)) {
