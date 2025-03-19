@@ -54,7 +54,7 @@ class ControllerAuthorize extends ControllerBase {
 			}
 
 			if (LdapHelper::Connect()->getPasswordReset($_SESSION['user_id'])){
-				return $this->displayAuthForm('<a href="https://auth.i.bolkhuis.nl/password">Please change your password.</a><br>Or ask the Board for help.');
+				return $this->displayAuthForm('<a href="https://auth.i.bolkhuis.nl/password" target="_blank">Please change your password</a> or ask the Board for help.');
 			}
 
 			//process authorization

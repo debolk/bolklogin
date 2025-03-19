@@ -15,9 +15,6 @@
 		<?php if ($error !== null): ?>
 			<p class="error"><?php echo $error; ?></p>
 		<?php endif; ?>
-		<?php if ($msg !== null): ?>
-            <p class="message"><?php echo $msg; ?></p>
-		<?php endif; ?>
 
 		<form action="/password?user_id=<?=$user;?>" method="POST">
             <p>

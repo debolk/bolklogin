@@ -54,8 +54,7 @@ class ControllerPassword extends ControllerAuthorize {
 				if ($password_new_confirm !== $password_new) {
 					return $this->displayPassForm("New passwords don't match.");
 				} else if ($ldap->set_password($user, $password_old, $password_new)) {
-					$this->logout();
-					return $this->displayPassForm(msg: "Password changed successfully.");
+					return $this->logout(msg: "Password changed successfully.");
 				} else {
 					$err = $ldap->lastErrorNo();
 					syslog(LOG_ERR, $ldap->lastError());
