@@ -63,10 +63,10 @@ class ControllerAuthorize extends ControllerBase {
 		}
 	}
 
-	protected function logout() {
+	protected function logout(string $msg = null) {
 		unset($_SESSION['user_id']);
 		unset($_SESSION['user_fullname']);
-		return $this->displayAuthForm();
+		return $this->displayAuthForm(msg: $msg);
 	}
 
 	/**
@@ -96,7 +96,7 @@ class ControllerAuthorize extends ControllerBase {
 	 * @param string|null $error if applicable, the error to display from an earlier attempt
 	 * @return Response
 	 */
-	protected function displayAuthForm(string $error = null): Response {
+	protected function displayAuthForm(string $error = null, string $msg = null): Response {
 		$user = null;
 		$user_fullname = null;
 		if ($this->isLoggedIn()){
