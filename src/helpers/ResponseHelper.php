@@ -31,9 +31,15 @@ class ResponseHelper
     }
 
     public static function json(Response $response, string $json): Response {
-        $response->getBody()->write($json);
-        return $response->withHeader("Content-Type", 'application/json');
+	    $response = $response->withHeader("Content-Type", 'application/json');
+		$response = $response->withStatus(200);
+		$response->getBody()->write($json);
+        return $response;
     }
+
+	public static function option(Response $response, string $method): Response {
+		return $response->withStatus(204)->withHeader('Allow', $method);
+	}
 
 	public static function set_headers(Response $response, array $headers) : Response {
 		foreach ($headers as $k => $v) {

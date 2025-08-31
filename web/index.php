@@ -20,14 +20,22 @@ require('../src/helpers/LdapHelper.php');
 require('../src/helpers/ResponseHelper.php');
 require('../src/controllers/ControllerBase.php');
 require('../src/controllers/ControllerAuthorize.php');
+require('../src/controllers/ControllerPassword.php');
 require('../src/controllers/ControllerResource.php');
 require('../src/controllers/ControllerToken.php');
 require('../src/Resource.php');
 
+//Open log
+openlog("bolklogin", LOG_PID | LOG_PERROR, LOG_LOCAL0);
+
 // Bootstrap application
 $app = Slim\Factory\AppFactory::create();
-syslog(LOG_ERR, $config['LDAP_BASE']);
-LdapHelper::Initialise($config['LDAP_HOST'], $config['LDAP_BASE']);
+$ldap = LdapHelper::Initialise($config['LDAP_HOST'], $config['LDAP_BASE']);
+if ($ldap->getStartTLS()) {
+	syslog(LOG_INFO, "Successfully started STARTTLS connection with LDAP server.");
+} else {
+	syslog(LOG_ERR, "Unable to start STARTTLS connection with LDAP server.");
+}
 
 try {
 	$storage = new \OAuth2\Storage\Pdo(array(
@@ -64,29 +72,37 @@ $server->addGrantType(new OAuth2\GrantType\RefreshToken($storage, [
 
 //initialise Resource classes
 $authenticate = new ControllerAuthorize($server);
+$password = new ControllerPassword($server);
 $resource = new ControllerResource($server);
 $token = new ControllerToken($server);
 //access levels
 $bekend = new Resource($server, [
-	'ou=people,ou=kandidaatleden,o=nieuwedelft',
-	'ou=people,ou=oudleden,o=nieuwedelft',
-	'ou=people,ou=leden,o=nieuwedelft',
-	'ou=people,ou=ledenvanverdienste,o=nieuwedelft',
-	'ou=people,ou=ereleden,o=nieuwedelft'
+	'cn=kandidaatleden,ou=groups,o=nieuwedelft',
+	'cn=oud-leden,ou=groups,o=nieuwedelft',
+	'cn=leden,ou=groups,o=nieuwedelft',
+	'cn=ledenvanverdienste,ou=groups,o=nieuwedelft',
+	'cn=ereleden,ou=groups,o=nieuwedelft',
+	'cn=externen,ou=groups,o=nieuwedelft',
+	'cn=ictcom,ou=groups,l=commissies,o=nieuwedelft',
+	'cn=bestuur,ou=groups,l=bestuur,o=nieuwedelft',
+	'cn=beheer,ou=groups,l=commissies,o=nieuwedelft'
 ]);
 $lid = new Resource($server, [
-	'ou=people,ou=leden,o=nieuwedelft',
-	'ou=people,ou=ledenvanverdienste,o=nieuwedelft',
-	'ou=people,ou=ereleden,o=nieuwedelft'
+	'cn=leden,ou=groups,o=nieuwedelft',
+	'cn=ledenvanverdienste,ou=groups,o=nieuwedelft',
+	'cn=ereleden,ou=groups,o=nieuwedelft',
+	'cn=ictcom,ou=groups,l=commissies,o=nieuwedelft',
+	'cn=bestuur,ou=groups,l=bestuur,o=nieuwedelft',
+	'cn=beheer,ou=groups,l=commissies,o=nieuwedelft'
 ]);
 $ictcom = new Resource($server, [
-	'cn=ictcom,ou=groups,o=nieuwedelft',
-	'cn=bestuur,ou=groups,o=nieuwedelft',
-	'cn=beheer,ou=groups,o=nieuwedelft'
+	'cn=ictcom,ou=groups,l=commissies,o=nieuwedelft',
+	'cn=bestuur,ou=groups,l=bestuur,o=nieuwedelft',
+	'cn=beheer,ou=groups,l=commissies,o=nieuwedelft'
 ]);
 $bestuur = new Resource($server, [
-	'cn=bestuur,ou=groups,o=nieuwedelft',
-	'cn=beheer,ou=groups,o=nieuwedelft'
+	'cn=bestuur,ou=groups,l=bestuur,o=nieuwedelft',
+	'cn=beheer,ou=groups,l=commissies,o=nieuwedelft'
 ]);
 
 $app->getRouteCollector()->setDefaultInvocationStrategy(new RequestResponse());
@@ -103,6 +119,10 @@ $app->get('/authenticate', [$authenticate, 'process']);
 $app->post('/authenticate', [$authenticate, 'process']);
 $app->options('/authenticate', [$authenticate, 'options']);
 
+$app->get('/password', [$password, 'process']);
+$app->post('/password', [$password, 'process']);
+$app->options('/password', [$password, 'process']);
+
 //redirect to this with response_type=code client_id, redirect_uri & state
 $app->get('/authorize', array($authenticate, 'process'));
 $app->post('/authorize', array($authenticate, 'process'));
@@ -110,6 +130,7 @@ $app->options('/authorize', [$authenticate, 'options']);
 
 //validate access token with access_token
 $app->get('/resource', array($resource, 'process'));
+$app->get('/resource/', array($resource, 'process'));
 $app->options('/resource', [$resource, 'options']);
 
 //get access token from server with client_id and client_secret in json body
@@ -138,3 +159,4 @@ $app->post('/bestuur', [$bestuur, 'checkAuthorized']);
 $app->options('/bestuur', [$bestuur, 'options']);
 
 $app->run();
+closelog();

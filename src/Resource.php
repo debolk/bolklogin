@@ -8,12 +8,14 @@ class Resource {
 
 	protected Server $server;
 	protected array $groups = [];
+	protected string $method;
 
-	function __construct(Server $server, array $groups) {
+	function __construct(Server $server, array $groups, string $method = 'OPTIONS, GET, POST') {
 		$this->server = $server;
 		foreach ($groups as $group) {
 			$this->groups[] = $group . ',' . LdapHelper::Connect()->getBaseDn();
 		}
+		$this->method = $method;
 	}
 
 	/**
@@ -35,7 +37,11 @@ class Resource {
 		//check all groups of the resource, if the user is not in any of the groups, return not authorized
 		foreach($this->groups as $group) {
 			if ($ldap->memberOf($group, $uid)) {
-				return ResponseHelper::create($response, 200, 'OK');
+				return ResponseHelper::json($response, json_encode([
+					'access_token' => $token['access_token'],
+					'user_id' => $token['user_id'],
+					'expires' => date("c", $token['expires']),
+				]));
 			}
 		}
 		return ResponseHelper::create($response, 403, json_encode([
@@ -44,4 +50,7 @@ class Resource {
 		]));
 	}
 
+	public function options(Request $request, Response $response, array $args) {
+		return ResponseHelper::option($response, $this->method);
+	}
 }

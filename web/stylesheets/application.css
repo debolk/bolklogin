@@ -28,8 +28,16 @@ p {
 	border-color: #c43c35;
 	color: #ffd3d3;
 }
+
 .error {
 	background-color: red;
+	border-radius: 0.25em;
+	color: white;
+	padding: 1em;
+}
+
+.message {
+	background-color: #57a957;
 	border-radius: 0.25em;
 	color: white;
 	padding: 1em;

@@ -27,7 +27,7 @@ abstract class ControllerBase {
 	}
 
 	public function process(Request $request, Response $response, array $args): Response {
-		return ResponseHelper::set_headers( $this->process_request($request, $response, $args) , [
+		return ResponseHelper::set_headers($this->process_request($request, $response, $args), [
 			'Access-Control-Allow-Origin' => '*',
 			'Access-Control-Allow-Methods' => 'POST, GET, OPTIONS',
 			'Access-Control-Allow-Headers' => 'Content-Type']);

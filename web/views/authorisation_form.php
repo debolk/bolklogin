@@ -18,13 +18,16 @@
 		<?php if ($error !== null): ?>
 			<p class="error"><?php echo $error; ?></p>
 		<?php endif; ?>
+		<?php if ($msg !== null): ?>
+            <p class="message"><?php echo $msg; ?></p>
+		<?php endif; ?>
 
 		<form action="<?= $_SERVER['REQUEST_URI']; ?>" method="POST">
 
 			<?php if ($user): ?>
 				<p>
 					Welcome back, <?=$user_fullname;?>.
-					<button type="submit" name="logout" value=1 />Log out</button>
+					<button type="submit" name="logout" value=1/>Log out</button>
 				</p>
 			<?php else: ?>
 				<div>
@@ -36,10 +39,12 @@
 					<input type="password" name="password" id="password">
 				</div>
 			<?php endif; ?>
-			<div>
-				<button type="submit" name="authorization" value="1" class="yes">Yes, I give access</button>
-				<button type="submit" name="authorization" value="0" class="no">No, I do not give access</button>
-			</div>
+            <?php if (!isset($error) || !str_contains($error, "Please change your password")): ?>
+                <div>
+                    <button type="submit" name="authorization" value="1" class="yes">Yes, I give access</button>
+                    <button type="submit" name="authorization" value="0" class="no">No, I do not give access</button>
+                </div>
+            <?php endif; ?>
 		</form>
 	</body>
 </html>
