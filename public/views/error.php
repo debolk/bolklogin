@@ -3,7 +3,7 @@
 	<head>
 		<title>Bolklogin</title>
 
-		<link rel="icon" href="/images/favicon.png">
+		<link rel="icon" type="image/x-icon" href="/images/favicon.svg">
 
 		<style><?php include "stylesheets/application.css"; ?></style>
 	</head>

@@ -81,7 +81,7 @@ class ControllerAuthorize extends ControllerBase {
 		ob_start();
 
 		//include the php file and execute code within
-		include('../web/views/error.php');
+		include('../public/views/error.php');
 
 		//get content from the output buffer and save it in $html
 		$html = ob_get_clean();
@@ -109,7 +109,7 @@ class ControllerAuthorize extends ControllerBase {
 		ob_start();
 
 		//include the php file and execute code within
-		include('../web/views/authorisation_form.php');
+		include('../public/views/authorisation_form.php');
 
 		//get content from the output buffer and save it in $html
 		$html = ob_get_clean();

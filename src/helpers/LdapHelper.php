@@ -24,11 +24,6 @@ class LdapHelper
         $this->ldap = @ldap_connect($ldap_host);
         $this->basedn = $ldap_base;
         ldap_set_option($this->ldap, LDAP_OPT_PROTOCOL_VERSION, 3); //sets ldap protocol to v3; the server won't accept otherwise
-	    $this->starttls = ldap_start_tls($this->ldap);
-    }
-
-	public function getStartTLS(): bool {
-		return $this->starttls;
 	}
 
     public function escapeArgument($argument)

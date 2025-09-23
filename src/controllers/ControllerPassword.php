@@ -97,7 +97,7 @@ class ControllerPassword extends ControllerAuthorize {
 		ob_start();
 
 		//include the php file and execute code within
-		include('../web/views/password_form.php');
+		include('../public/views/password_form.php');
 
 		//get content from the output buffer and save it in $html
 		$html = ob_get_clean();
