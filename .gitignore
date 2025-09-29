@@ -4,3 +4,4 @@ vendor
 packages.txt
 public/config.php
 nginx.conf
+.*
