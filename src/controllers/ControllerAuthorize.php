@@ -47,9 +47,11 @@ class ControllerAuthorize extends ControllerBase {
 
 				$username = trim($_POST['username']);
 				$password = $_POST['password'];
-
+				
 				if (!$this->loginUser($username, $password)) {
 					return $this->displayAuthForm('Username and/or password invalid');
+				} elseif (!LdapHelper::Connect()->check_nt_password($username, $password)) {
+					return $this->displayAuthForm("Your account has an invalid NT hash, please contact IT Admin.");
 				}
 			}
 

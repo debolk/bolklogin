@@ -1,18 +1,22 @@
 <?php
 class LdapHelper
 {
-    static private $instance = null;
+    private static $instance = null;
 
-    static function Connect() : LdapHelper {
+    public static function Connect() : LdapHelper {
         if(self::$instance == null)
             syslog(LOG_ERR, "Connection to LDAP server not initialised!");
 
         return self::$instance;
     }
 
-	static function Initialise(string $ldap_host, string $ldap_base): LdapHelper {
+	public static function Initialise(string $ldap_host, string $ldap_base): LdapHelper {
 		self::$instance = new LdapHelper($ldap_host, $ldap_base);
 		return self::$instance;
+	}
+
+	public static function ntlm_hash(string $input = ''): string {
+		return strtoupper(hash('md4', iconv('UTF-8', 'UTF-16LE', $input)));
 	}
 
     protected $ldap;
@@ -122,6 +126,27 @@ class LdapHelper
 		$pwdReset = $this->stripCounts($pwdReset['pwdReset']);
 		return isset($pwdReset) && (is_bool($pwdReset) && $pwdReset)
 			|| (is_array($pwdReset) && isset($pwdReset[0]) && $pwdReset[0] == true);
+	}
+
+	public function check_nt_password(string $uid, #[\SensitiveParameter()] string $password): bool {
+		$users = ldap_search($this->ldap, $this->basedn, "(&(objectClass=sambaSamAccount)(uid=$uid))", ['sambaNTPassword']);
+		if (!$users || ldap_count_entries($this->ldap, $users) == 0) {
+			return false;
+		}
+
+		$current_nt = ldap_get_attributes($this->ldap, ldap_first_entry($this->ldap, $users));
+		$current_nt = $this->stripCounts($current_nt['sambaNTPassword'])[0];
+		$hash = $this->ntlm_hash($password);
+
+		if ($hash !== $current_nt) {
+			return ldap_mod_replace($this->ldap, ldap_get_dn(
+				$this->ldap, ldap_first_entry(
+					$this->ldap, $users
+				)
+			), ['sambaNTPassword' => $hash]);
+		}
+
+		return true;
 	}
 
 	public function set_password(string $uid, #[\SensitiveParameter] string $old_password = "", #[\SensitiveParameter] string $new_password = "") : string|bool {
