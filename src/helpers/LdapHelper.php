@@ -49,6 +49,22 @@ class LdapHelper
 		return ldap_get_dn($this->ldap, ldap_first_entry($this->ldap, $users));
 	}
 
+	public function findGroup(string $groupname): string|bool {
+		$groupname = $this->escapeArgument($groupname);
+
+		if (str_contains($groupname, 'gid:')){
+			$groupname = str_replace('gid:', '', $groupname);
+			$groups = ldap_search($this->ldap, $this->basedn, '(&(objectClass=posixGroup)(gidnumber=' . $groupname . '))');
+		} else {
+			$groups = ldap_search($this->ldap, $this->basedn, '(&(objectClass=posixGroup)(cn=' . $groupname . '))');
+		}
+		
+		if (!$groups || ldap_count_entries($this->ldap, $groups) == 0) {
+			return false;
+		}
+		return ldap_get_dn($this->ldap, ldap_first_entry($this->ldap, $groups));
+	}
+
     public function bind($uid, $pass): bool {
 		$user = $this->getDn($uid);
 		if (is_bool($user)) {

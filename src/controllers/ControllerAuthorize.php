@@ -59,6 +59,7 @@ class ControllerAuthorize extends ControllerBase {
 
 			//process authorization
 			$this->server->handleAuthorizeRequest($req, $res, true, $_SESSION['user_id']);
+
 			return $this->returnToken($res);
 		}
 	}

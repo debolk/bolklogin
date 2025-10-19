@@ -25,6 +25,7 @@ require('../src/controllers/ControllerPassword.php');
 require('../src/controllers/ControllerResource.php');
 require('../src/controllers/ControllerToken.php');
 require('../src/Resource.php');
+require('../src/GroupResource.php');
 require('../src/helpers/HttpErrorHandler.php');
 
 //Open log
@@ -113,6 +114,7 @@ $bestuur = new Resource($server, [
 	'cn=bestuur,ou=groups,l=bestuur,o=nieuwedelft',
 	'cn=beheer,ou=groups,l=commissies,o=nieuwedelft'
 ]);
+$group = new GroupResource($server);
 
 $app->getRouteCollector()->setDefaultInvocationStrategy(new RequestResponse());
 
@@ -166,6 +168,10 @@ $app->options('/ictcom', [$ictcom, 'options']);
 $app->get('/bestuur', [$bestuur, 'checkAuthorized']);
 $app->post('/bestuur', [$bestuur, 'checkAuthorized']);
 $app->options('/bestuur', [$bestuur, 'options']);
+
+$app->get('/group/{group}', [$group, 'checkAuthorized']);
+$app->post('/group/{group}', [$group, 'checkAuthorized']);
+$app->options('/group/{group}', [$group, 'options']);
 
 $app->run();
 closelog();
