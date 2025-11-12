@@ -15,7 +15,20 @@ class ResponseHelper
 		$new_response = new Response();
 		$new_response = $new_response->withStatus($response->getStatusCode(), $response->getStatusText());
 		$new_response = self::set_headers($new_response, $response->getHttpHeaders());
-		return self::json($new_response, $response->getResponseBody('json'));
+		$res = self::json($new_response, $response->getResponseBody('json'));
+		
+		syslog(LOG_DEBUG, "----- INCOMING REQUEST -----");
+		syslog(LOG_DEBUG, "SERVER --> " . var_export($_SERVER, true));
+		syslog(LOG_DEBUG, "GET --> " . var_export($_GET, true));
+		$post = $_POST;
+		$post['password'] = null;
+		syslog(LOG_DEBUG, "POST --> " . var_export($post, true));
+		syslog(LOG_DEBUG, "SESSION --> " . var_export($_SESSION, true));
+		syslog(LOG_DEBUG, "OAUTH RESPONSE --> " . var_export($response->getHttpHeaders(), true));
+		syslog(LOG_DEBUG, "PSR7 RESPONSE --> " . var_export($res->getHeaders(), true));
+		syslog(LOG_DEBUG, "----- REQUEST COMPLETE -----");
+
+		return $res;
 	}
 
     public static function create(Response $response, int $code, string $message, string $contentType = "text/plain"): Response

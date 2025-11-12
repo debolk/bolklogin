@@ -3,6 +3,7 @@
 // Determine debug settings
 use Slim\Handlers\Strategies\RequestResponse;
 use Slim\Handlers\Strategies\RequestResponseArgs;
+use Slim\Factory\AppFactory;
 
 $config = require('config.php');
 
@@ -24,18 +25,26 @@ require('../src/controllers/ControllerPassword.php');
 require('../src/controllers/ControllerResource.php');
 require('../src/controllers/ControllerToken.php');
 require('../src/Resource.php');
+require('../src/GroupResource.php');
+require('../src/helpers/HttpErrorHandler.php');
 
 //Open log
 openlog("bolklogin", LOG_PID | LOG_PERROR, LOG_LOCAL0);
 
 // Bootstrap application
-$app = Slim\Factory\AppFactory::create();
+$app = AppFactory::create();
+
+//setup error handling
+$callableResolver = $app->getCallableResolver();
+$responseFactory = $app->getResponseFactory();
+
+$errorHandler = new HttpErrorHandler($callableResolver, $responseFactory);
+
+$app->addRoutingMiddleware();
+$errorMiddleware = $app->addErrorMiddleware(true, false, false);
+$errorMiddleware->setDefaultErrorHandler($errorHandler);
+
 $ldap = LdapHelper::Initialise($config['LDAP_HOST'], $config['LDAP_BASE']);
-if ($ldap->getStartTLS()) {
-	syslog(LOG_INFO, "Successfully started STARTTLS connection with LDAP server.");
-} else {
-	syslog(LOG_ERR, "Unable to start STARTTLS connection with LDAP server.");
-}
 
 try {
 	$storage = new \OAuth2\Storage\Pdo(array(
@@ -71,7 +80,7 @@ $server->addGrantType(new OAuth2\GrantType\RefreshToken($storage, [
 ]));
 
 //initialise Resource classes
-$authenticate = new ControllerAuthorize($server);
+$authorize = new ControllerAuthorize($server);
 $password = new ControllerPassword($server);
 $resource = new ControllerResource($server);
 $token = new ControllerToken($server);
@@ -83,6 +92,7 @@ $bekend = new Resource($server, [
 	'cn=ledenvanverdienste,ou=groups,o=nieuwedelft',
 	'cn=ereleden,ou=groups,o=nieuwedelft',
 	'cn=externen,ou=groups,o=nieuwedelft',
+	'cn=donateurs,ou=groups,o=nieuwedelft',
 	'cn=ictcom,ou=groups,l=commissies,o=nieuwedelft',
 	'cn=bestuur,ou=groups,l=bestuur,o=nieuwedelft',
 	'cn=beheer,ou=groups,l=commissies,o=nieuwedelft'
@@ -104,6 +114,7 @@ $bestuur = new Resource($server, [
 	'cn=bestuur,ou=groups,l=bestuur,o=nieuwedelft',
 	'cn=beheer,ou=groups,l=commissies,o=nieuwedelft'
 ]);
+$group = new GroupResource($server);
 
 $app->getRouteCollector()->setDefaultInvocationStrategy(new RequestResponse());
 
@@ -115,18 +126,18 @@ $app->get('/', 'Readme::getIndex');
  *              Applications should replace the uri.
  */
 //redirect to this with response_type=code client_id, redirect_uri & state
-$app->get('/authenticate', [$authenticate, 'process']);
-$app->post('/authenticate', [$authenticate, 'process']);
-$app->options('/authenticate', [$authenticate, 'options']);
+$app->get('/authenticate', [$authorize, 'process']);
+$app->post('/authenticate', [$authorize, 'process']);
+$app->options('/authenticate', [$authorize, 'options']);
 
 $app->get('/password', [$password, 'process']);
 $app->post('/password', [$password, 'process']);
 $app->options('/password', [$password, 'process']);
 
 //redirect to this with response_type=code client_id, redirect_uri & state
-$app->get('/authorize', array($authenticate, 'process'));
-$app->post('/authorize', array($authenticate, 'process'));
-$app->options('/authorize', [$authenticate, 'options']);
+$app->get('/authorize', array($authorize, 'process'));
+$app->post('/authorize', array($authorize, 'process'));
+$app->options('/authorize', [$authorize, 'options']);
 
 //validate access token with access_token
 $app->get('/resource', array($resource, 'process'));
@@ -157,6 +168,10 @@ $app->options('/ictcom', [$ictcom, 'options']);
 $app->get('/bestuur', [$bestuur, 'checkAuthorized']);
 $app->post('/bestuur', [$bestuur, 'checkAuthorized']);
 $app->options('/bestuur', [$bestuur, 'options']);
+
+$app->get('/group/{group}', [$group, 'checkAuthorized']);
+$app->post('/group/{group}', [$group, 'checkAuthorized']);
+$app->options('/group/{group}', [$group, 'options']);
 
 $app->run();
 closelog();

@@ -3,7 +3,7 @@
 	<head>
 		<title>BolkLogin</title>
 
-		<link rel="icon" href="/images/favicon.png">
+		<link rel="icon" type="image/x-icon" href="/images/favicon.svg">
 
 		<style>
 			p, img {
@@ -136,7 +136,7 @@
             <code>https://login.i.bolkhuis.nl/resource?access_token=example</code>
         </p>
         <p>
-            If valid, the authorization server will return the full access token, the ID of the user (which you can use to look up the user details in <a href="http://blip.i.bolkhuis.nl">blip</a> and <a href="http://operculum.i.bolkhuis.nl">operculum</a>) and the expiry time of the access token (<a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>-formatted), which looks like this:
+            If valid, the authorization server will return the full access token, the ID of the user (which you can use to look up the user details in <a href="http://blip.i.bolkhuis.nl">blip</a>) and the expiry time of the access token (<a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>-formatted), which looks like this:
         </p>
         <p>
             <code>{"access_token":"example","user_id":"jakob","expires":"2014-09-29T22:37:09+00:00"}</code>
@@ -153,7 +153,7 @@
 			Using your refresh token, issue a JSON-encoded HTTP request to:
 		</p>
 		<p>
-			<code>https://auth.debolk.nl/token/</code>
+			<code>https://auth.debolk.nl/token</code>
 		</p>
 		<p>
 			using the payload:
@@ -191,7 +191,7 @@
 			This is dependent on your server, though the accepted default is to simply append it to the URL:
 		</p>
 		<p>
-			<code>http://server.nl/resource/?access_token=TOKEN</code>
+			<code>http://server.nl/resource?access_token=TOKEN</code>
 		</p>
 
 		<h3><a name="validate-access-token">Validate access token</a></h3>
@@ -199,7 +199,7 @@
 			As a resource server, you need to validate access tokens sent to you by clients. You do this by calling the authorization server at the following url:
 		</p>
 		<p>
-			<code>https://login.i.bolkhuis.nl/resource/?access_token=example</code>
+			<code>https://login.i.bolkhuis.nl/resource?access_token=example</code>
 		</p>
 		<p>
 			If valid, the authorization server will return the full access token, the ID of the user (which you can use to look up the user details in <a href="http://blip.i.bolkhuis.nl">blip</a> and <a href="http://operculum.i.bolkhuis.nl">operculum</a>) and the expiry time of the access token (<a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>-formatted), which looks like this:
@@ -220,7 +220,7 @@
 			<li><strong>ictcom: </strong> members of beheer, bestuur or ictcom</li>
 			<li><strong>lid: </strong> members of the society (does not include candidate-members)</li>
 			<li><strong>bekend: </strong> members, former members and candidate-members of the society</li>
-			<li><strong>mp3control: </strong> members of beheer and bestuur (this level is used to control access to the API of the mp3-computers)</li>
+			<li><strong>group/{group}: </strong> members of the posixGroup as specified in {group}. Can also search for gid numbers, prefix "gid:" to your search for this.</li>
 		</ul>
 		<p>
 			You can check whether the current user can access the authorization level "ictcom" for example by requesting the URL:

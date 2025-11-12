@@ -18,10 +18,7 @@ class Resource {
 		$this->method = $method;
 	}
 
-	/**
-	 * @throws Exception
-	 */
-	public function checkAuthorized(Request $request, Response $response, array $args): Response {
+	protected function getToken(Request $request, Response $response) {
 		$req = \OAuth2\Request::createFromGlobals();
 
 		//verify the request
@@ -30,6 +27,19 @@ class Resource {
 		}
 
 		$token = $this->server->getAccessTokenData($req);
+		return $token;
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function checkAuthorized(Request $request, Response $response, array $args): Response {
+		
+		$token = $this->getToken($request, $response);
+		if (!is_array($token)) {
+			return $token;
+		}
+
 		$uid = $token['user_id'];
 
 		$ldap = LdapHelper::Connect();

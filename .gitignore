@@ -2,4 +2,6 @@ vendor
 .htaccess
 .idea/
 packages.txt
-web/config.php
+public/config.php
+nginx.conf
+.*

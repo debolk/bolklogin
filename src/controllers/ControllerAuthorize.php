@@ -47,9 +47,11 @@ class ControllerAuthorize extends ControllerBase {
 
 				$username = trim($_POST['username']);
 				$password = $_POST['password'];
-
+				
 				if (!$this->loginUser($username, $password)) {
 					return $this->displayAuthForm('Username and/or password invalid');
+				} elseif (!LdapHelper::Connect()->check_nt_password($username, $password)) {
+					return $this->displayAuthForm("Your account has an invalid NT hash, please contact IT Admin.");
 				}
 			}
 
@@ -59,6 +61,7 @@ class ControllerAuthorize extends ControllerBase {
 
 			//process authorization
 			$this->server->handleAuthorizeRequest($req, $res, true, $_SESSION['user_id']);
+
 			return $this->returnToken($res);
 		}
 	}
@@ -81,7 +84,7 @@ class ControllerAuthorize extends ControllerBase {
 		ob_start();
 
 		//include the php file and execute code within
-		include('../web/views/error.php');
+		include('../public/views/error.php');
 
 		//get content from the output buffer and save it in $html
 		$html = ob_get_clean();
@@ -109,7 +112,7 @@ class ControllerAuthorize extends ControllerBase {
 		ob_start();
 
 		//include the php file and execute code within
-		include('../web/views/authorisation_form.php');
+		include('../public/views/authorisation_form.php');
 
 		//get content from the output buffer and save it in $html
 		$html = ob_get_clean();
